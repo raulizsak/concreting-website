@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://your-business-name.example/sitemap-index.xml
+Sitemap: https://concreting-website.netlify.app/sitemap-index.xml
