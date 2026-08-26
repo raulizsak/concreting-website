@@ -1,0 +1,35 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  demoNote?: string;
+}
+
+const { eyebrow, title, intro, demoNote } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="page-hero-grid" aria-hidden="true"></div>
+  <div class="container page-hero-inner">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1 class="display">{title}</h1>
+    <div class="page-hero-copy">
+      <p>{intro}</p>
+      {demoNote && <p class="page-demo-note">{demoNote}</p>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .page-hero { position: relative; overflow: hidden; padding: clamp(10rem, 19vw, 14rem) 0 clamp(4.5rem, 9vw, 8rem); background: var(--ink); color: white; }
+  .page-hero::after { position: absolute; right: -8rem; bottom: -16rem; width: 38rem; height: 38rem; border: 1px solid rgba(216,150,63,.2); border-radius: 50%; content: ""; }
+  .page-hero-grid { position: absolute; inset: 0 0 0 52%; opacity: .13; background-image: linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px); background-size: 4.5rem 4.5rem; }
+  .page-hero-inner { position: relative; z-index: 1; }
+  .page-hero .eyebrow { color: var(--amber); }
+  .page-hero .display { max-width: 13ch; overflow-wrap: break-word; font-size: clamp(2.6rem, 10vw, 8.2rem); }
+  .page-hero-copy { display: grid; gap: 1rem; max-width: 46rem; margin-top: 2rem; }
+  .page-hero-copy p { margin: 0; color: rgba(255,255,255,.76); font-size: clamp(1rem, 2vw, 1.22rem); }
+  .page-demo-note { border-left: 2px solid var(--amber); padding-left: 1rem; font-size: .76rem !important; }
+  @media (min-width: 64rem) { .page-hero-copy { grid-template-columns: 1.4fr .6fr; gap: 2.5rem; margin-left: 35%; } }
+</style>

@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import SectionCta from '../../components/SectionCta.astro';
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
+const filters = ['All', 'Concreting', 'Fencing', 'Outdoor Works'];
+---
+
+<BaseLayout
+  title="Our Projects | Your Business Name"
+  description="Browse a demonstration project gallery for concreting, fencing and outdoor construction work. All current projects are clearly marked samples."
+>
+  <PageHero
+    eyebrow="Project gallery"
+    title="Our projects"
+    intro="A visual, file-based project gallery designed to make genuine completed work easy to browse—and simple to add later."
+    demoNote="Every project currently shown is generated sample content, not completed client work."
+  />
+
+  <section class="section projects-page">
+    <div class="container">
+      <div class="filter-bar" role="group" aria-label="Filter projects by service">
+        {filters.map((filter, index) => (
+          <button type="button" data-filter={filter} aria-pressed={index === 0 ? 'true' : 'false'}>{filter}</button>
+        ))}
+      </div>
+      <p class="filter-status" aria-live="polite">Showing all {projects.length} sample projects.</p>
+      <div class="project-grid" data-project-grid>
+        {projects.map((project, index) => <ProjectCard project={project} priority={index < 2} />)}
+      </div>
+      <noscript><p class="noscript-note">Project filtering needs JavaScript. All projects remain visible without it.</p></noscript>
+    </div>
+  </section>
+
+  <SectionCta title="Have a similar project?" copy="Tell us what you are planning and request a free, no-obligation quote." />
+</BaseLayout>
+
+<script>
+  const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-category]'));
+  const status = document.querySelector<HTMLElement>('.filter-status');
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const filter = button.dataset.filter ?? 'All';
+      let visible = 0;
+      filterButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      cards.forEach((card) => {
+        const matches = filter === 'All' || (card.dataset.category ?? '').split('|').includes(filter);
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+      if (status) status.textContent = `Showing ${visible} ${filter === 'All' ? 'sample projects' : `${filter.toLowerCase()} sample projects`}.`;
+    });
+  });
+</script>
+
+<style>
+  .projects-page { background: var(--paper); }
+  .filter-bar { display: flex; overflow-x: auto; gap: .5rem; padding-bottom: .5rem; scrollbar-width: thin; }
+  .filter-bar button { flex: 0 0 auto; min-height: 2.8rem; border: 1px solid var(--line); border-radius: 999px; padding: .65rem 1rem; background: transparent; color: var(--muted); font-family: "Archivo Variable", sans-serif; font-size: .7rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
+  .filter-bar button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: white; }
+  .filter-status { margin: 1rem 0 3rem; color: var(--muted); font-size: .75rem; }
+  .project-grid { display: grid; gap: clamp(2.5rem, 5vw, 5rem) 1.5rem; }
+  .noscript-note { margin-top: 2rem; color: var(--muted); font-size: .75rem; }
+  @media (min-width: 48rem) { .project-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

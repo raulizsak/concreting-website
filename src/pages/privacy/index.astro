@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy Placeholder | Your Business Name"
+  description="Placeholder privacy information for the website mockup. This wording requires legal review and the business's real details before launch."
+  noindex={true}
+>
+  <PageHero
+    eyebrow="Privacy"
+    title="Privacy policy placeholder"
+    intro="This mockup collects quote-request information through a Netlify form. The policy below is a drafting placeholder and is not legal advice."
+    demoNote="Replace and review this page with the business's correct legal name, contact details and final data-handling practices before public launch."
+  />
+
+  <section class="section privacy-content">
+    <div class="container privacy-grid">
+      <aside>
+        <p>Document status</p>
+        <strong>Placeholder · Requires review</strong>
+      </aside>
+      <div class="legal-copy">
+        <p class="warning"><strong>Important:</strong> This is sample wording for the design mockup only. It must be reviewed and replaced with a policy appropriate to the real business and applicable Australian privacy obligations.</p>
+
+        <h2>Information this website may collect</h2>
+        <p>When someone submits the quote form, the website may collect their name, phone number, email address, suburb or postcode, requested service and the project details they choose to provide.</p>
+
+        <h2>Why the information is collected</h2>
+        <p>The intended purpose is to respond to enquiries, discuss requested work and provide information about a possible quote. The final policy should describe the business's actual practices accurately.</p>
+
+        <h2>How form submissions are handled</h2>
+        <p>The current technical design uses Netlify Forms. Netlify may process and store form submissions on behalf of the website owner. The business should confirm retention, access and deletion practices before launch.</p>
+
+        <h2>Sharing and disclosure</h2>
+        <p>Insert the business's genuine policy about when information may be shared with service providers, professional advisers or authorities. Do not rely on this placeholder.</p>
+
+        <h2>Access, correction and deletion</h2>
+        <p>Insert instructions for contacting the business to request access to, correction of or deletion of personal information, as appropriate.</p>
+
+        <h2>Cookies and analytics</h2>
+        <p>No analytics or advertising tracking has been added to this mockup. If analytics or other third-party tools are added later, update this policy and consent practices as required.</p>
+
+        <h2>Contact</h2>
+        <p>Privacy enquiries: <strong>hello@[DOMAIN PLACEHOLDER]</strong>. Replace this with a monitored business contact before launch.</p>
+
+        <p class="updated">Placeholder last reviewed: August 2026.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .privacy-content { background: var(--paper); }
+  .privacy-grid { display: grid; gap: 2.5rem; }
+  .privacy-grid aside { align-self: start; border-top: 3px solid var(--amber); padding-top: 1rem; }
+  .privacy-grid aside p { margin: 0; color: var(--muted); font-size: .65rem; font-weight: 760; letter-spacing: .09em; text-transform: uppercase; }
+  .privacy-grid aside strong { display: block; margin-top: .4rem; font-family: "Archivo Variable", sans-serif; font-size: 1rem; }
+  .legal-copy { max-width: 48rem; }
+  .warning { border: 1px solid rgba(169,97,30,.3); padding: 1rem; background: rgba(216,150,63,.08); }
+  .legal-copy h2 { margin: 2.5rem 0 .7rem; font-family: "Archivo Variable", sans-serif; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.03em; }
+  .legal-copy p { color: var(--muted); }
+  .updated { margin-top: 3rem; font-size: .72rem; }
+  @media (min-width: 64rem) { .privacy-grid { grid-template-columns: .5fr 1.5fr; } .privacy-grid aside { position: sticky; top: 2rem; } }
+</style>

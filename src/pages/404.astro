@@ -1,0 +1,23 @@
+---
+import { ArrowLeft } from '@lucide/astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found | Your Business Name" description="The requested page could not be found." noindex={true}>
+  <section class="not-found">
+    <div class="container">
+      <p class="eyebrow">404 · Page not found</p>
+      <h1 class="display">This path needs a new direction.</h1>
+      <p>The page may have moved, or the address might be incomplete.</p>
+      <a class="button" href="/"><ArrowLeft size={18} aria-hidden="true" /> Back to home</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found { display: grid; min-height: 80svh; align-items: center; padding: 10rem 0 5rem; background: var(--ink); color: white; }
+  .not-found .eyebrow { color: var(--amber); }
+  .not-found .display { max-width: 12ch; font-size: clamp(3.2rem, 9vw, 7.5rem); }
+  .not-found p:not(.eyebrow) { max-width: 35rem; color: rgba(255,255,255,.65); }
+  .not-found .button { margin-top: 1.5rem; }
+</style>

@@ -1,0 +1,39 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  variant?: 'project' | 'hero' | 'team';
+  loading?: 'eager' | 'lazy';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  src,
+  alt,
+  variant = 'project',
+  loading = 'lazy',
+  fetchpriority = 'auto',
+  sizes = variant === 'hero' ? '100vw' : '(min-width: 1024px) 50vw, 100vw',
+  class: className,
+} = Astro.props;
+
+const widths = variant === 'hero' ? [768, 1200, 1536] : variant === 'team' ? [640, 960, 1440] : [480, 800, 1200];
+const dimensions = variant === 'hero' ? [1536, 960] : variant === 'team' ? [1440, 960] : [1200, 900];
+const srcset = (format: string) => widths.map((width) => `${src}-${width}.${format} ${width}w`).join(', ');
+---
+
+<picture class={className}>
+  <source type="image/avif" srcset={srcset('avif')} sizes={sizes} />
+  <source type="image/webp" srcset={srcset('webp')} sizes={sizes} />
+  <img
+    src={`${src}-${widths[1]}.webp`}
+    width={dimensions[0]}
+    height={dimensions[1]}
+    alt={alt}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+  />
+</picture>

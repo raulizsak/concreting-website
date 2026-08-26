@@ -1,0 +1,78 @@
+---
+import { Clock3, Mail, MapPin, Phone } from '@lucide/astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import QuoteForm from '../../components/QuoteForm.astro';
+import { siteConfig } from '../../config/site';
+---
+
+<BaseLayout
+  title="Request a Free Quote | Your Business Name"
+  description="Request a free quote for a residential concreting, fencing or outdoor works project. Contact details are placeholders for this demo."
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Request a free quote"
+    intro="Tell us a little about your project. The form is ready to send enquiries securely through Netlify without an account or separate backend."
+    demoNote="The phone, email and service area are placeholders. The form flow is ready for testing on the Netlify demo."
+  />
+
+  <section class="section contact-section">
+    <div class="container contact-grid">
+      <aside class="contact-details">
+        <p class="eyebrow">Speak with us</p>
+        <h2 class="display">Let’s discuss the job.</h2>
+        <p>Prefer to talk? Once the real number is supplied, every phone link across the site can be updated from one configuration file.</p>
+
+        <div class="contact-list">
+          <a href={siteConfig.phoneHref}>
+            <Phone size={22} stroke-width={1.8} aria-hidden="true" />
+            <span><small>Phone</small><strong>{siteConfig.phoneDisplay}</strong></span>
+          </a>
+          <div>
+            <Mail size={22} stroke-width={1.8} aria-hidden="true" />
+            <span><small>Email</small><strong>{siteConfig.emailDisplay}</strong></span>
+          </div>
+          <div>
+            <MapPin size={22} stroke-width={1.8} aria-hidden="true" />
+            <span><small>Service area</small><strong>{siteConfig.serviceArea}</strong></span>
+          </div>
+          <div>
+            <Clock3 size={22} stroke-width={1.8} aria-hidden="true" />
+            <span><small>Hours</small><strong>[HOURS PLACEHOLDER]</strong></span>
+          </div>
+        </div>
+        <p class="contact-note">No street or home address is published in this mockup.</p>
+      </aside>
+
+      <div class="form-panel">
+        <div class="form-heading">
+          <p>Free quote request</p>
+          <span>Usually takes 2–3 minutes</span>
+        </div>
+        <QuoteForm />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact-section { background: var(--cream); }
+  .contact-grid { display: grid; align-items: start; gap: clamp(2.5rem, 7vw, 7rem); }
+  .contact-details { position: sticky; top: 2rem; }
+  .contact-details .display { max-width: 11ch; font-size: clamp(2.8rem, 6vw, 5.3rem); }
+  .contact-details > p:not(.eyebrow):not(.contact-note) { max-width: 35rem; margin: 1.25rem 0 0; color: var(--muted); }
+  .contact-list { display: grid; gap: 0; border-top: 1px solid var(--line); margin-top: 2.5rem; }
+  .contact-list > * { display: grid; grid-template-columns: 2.5rem 1fr; align-items: center; gap: .5rem; border-bottom: 1px solid var(--line); padding-block: 1rem; }
+  .contact-list svg { color: var(--amber-deep); }
+  .contact-list span { display: grid; }
+  .contact-list small { color: var(--muted); font-size: .62rem; font-weight: 740; letter-spacing: .08em; text-transform: uppercase; }
+  .contact-list strong { font-family: "Archivo Variable", sans-serif; font-size: .9rem; font-weight: 690; }
+  .contact-note { border-left: 2px solid var(--amber); margin: 1.5rem 0 0; padding-left: 1rem; color: var(--muted); font-size: .72rem; }
+  .form-panel { padding: clamp(1.25rem, 4vw, 2.5rem); background: var(--paper); box-shadow: var(--shadow); }
+  .form-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; border-bottom: 1px solid var(--line); margin-bottom: 1.75rem; padding-bottom: 1rem; }
+  .form-heading p, .form-heading span { margin: 0; font-size: .68rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; }
+  .form-heading span { color: var(--muted); font-weight: 550; letter-spacing: .02em; text-transform: none; }
+  @media (min-width: 64rem) { .contact-grid { grid-template-columns: .8fr 1.2fr; } }
+  @media (max-width: 63.99rem) { .contact-details { position: static; } }
+</style>

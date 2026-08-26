@@ -1,0 +1,39 @@
+---
+import { ArrowRight, CircleCheck, Phone } from '@lucide/astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { siteConfig } from '../../config/site';
+---
+
+<BaseLayout
+  title="Quote Request Received | Your Business Name"
+  description="Thank you for your quote request."
+  noindex={true}
+>
+  <section class="success-page">
+    <div class="success-grid" aria-hidden="true"></div>
+    <div class="success-card">
+      <CircleCheck size={52} stroke-width={1.5} aria-hidden="true" />
+      <p class="eyebrow">Request received</p>
+      <h1 class="display">Thanks—we’ll be in touch.</h1>
+      <p>Your project details have been submitted. This is the prepared Netlify Forms success page for the demo.</p>
+      <p class="demo-note">Before launch, confirm the client's expected response time and replace this placeholder wording.</p>
+      <div class="success-actions">
+        <a class="button" href="/">Back to home <ArrowRight size={18} aria-hidden="true" /></a>
+        <a class="button button--outline" href={siteConfig.phoneHref}><Phone size={17} aria-hidden="true" /> Call now</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .success-page { position: relative; display: grid; min-height: 85svh; place-items: center; overflow: hidden; padding: 9rem 1rem 5rem; background: var(--ink); color: white; }
+  .success-grid { position: absolute; inset: 0; opacity: .14; background-image: linear-gradient(rgba(255,255,255,.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.15) 1px, transparent 1px); background-size: 5rem 5rem; }
+  .success-card { position: relative; width: min(100%, 45rem); padding: clamp(1.5rem, 5vw, 4rem); background: #242521; box-shadow: 0 30px 90px rgba(0,0,0,.35); }
+  .success-card > svg { color: var(--amber); }
+  .success-card .eyebrow { margin-top: 1.75rem; color: var(--amber); }
+  .success-card .display { max-width: 12ch; font-size: clamp(3rem, 8vw, 6rem); }
+  .success-card > p:not(.eyebrow) { max-width: 35rem; color: rgba(255,255,255,.7); }
+  .success-card .demo-note { border-left: 2px solid var(--amber); padding-left: 1rem; font-size: .74rem; }
+  .success-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+  @media (max-width: 35rem) { .success-actions .button { width: 100%; } }
+</style>

@@ -1,0 +1,120 @@
+---
+import { ArrowRight, Info } from '@lucide/astro';
+---
+
+<form
+  class="quote-form"
+  name="quote-request"
+  method="POST"
+  action="/thanks/"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+  data-quote-form
+>
+  <input type="hidden" name="form-name" value="quote-request" />
+  <p class="honeypot">
+    <label>Do not fill this out if you are human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+  </p>
+
+  <div class="field-grid">
+    <div class="field">
+      <label for="name">Name <span aria-hidden="true">*</span></label>
+      <input id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-error" />
+      <span class="field-error" id="name-error">Please enter your name.</span>
+    </div>
+    <div class="field">
+      <label for="phone">Phone number <span aria-hidden="true">*</span></label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required pattern="[0-9+()\s-]{8,20}" aria-describedby="phone-hint phone-error" />
+      <span class="field-hint" id="phone-hint">Use a number we can call during business hours.</span>
+      <span class="field-error" id="phone-error">Please enter a valid phone number.</span>
+    </div>
+    <div class="field">
+      <label for="email">Email <span class="optional">Optional</span></label>
+      <input id="email" name="email" type="email" autocomplete="email" inputmode="email" aria-describedby="email-error" />
+      <span class="field-error" id="email-error">Please check the email address.</span>
+    </div>
+    <div class="field">
+      <label for="location">Suburb / postcode <span aria-hidden="true">*</span></label>
+      <input id="location" name="location" type="text" autocomplete="postal-code" required aria-describedby="location-error" />
+      <span class="field-error" id="location-error">Please enter the project suburb or postcode.</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="service">Service required <span aria-hidden="true">*</span></label>
+    <select id="service" name="service" required aria-describedby="service-error">
+      <option value="">Select a service</option>
+      <option value="concreting">Concreting</option>
+      <option value="fencing">Fencing</option>
+      <option value="outdoor-works">Outdoor works</option>
+      <option value="multiple-services">Multiple services</option>
+      <option value="other">Other</option>
+    </select>
+    <span class="field-error" id="service-error">Please select a service.</span>
+  </div>
+
+  <div class="field">
+    <label for="details">Project details <span aria-hidden="true">*</span></label>
+    <textarea id="details" name="details" rows="6" required minlength="10" aria-describedby="details-hint details-error" placeholder="Tell us what you would like to build, replace or finish."></textarea>
+    <span class="field-hint" id="details-hint">A short description is enough to get the conversation started.</span>
+    <span class="field-error" id="details-error">Please add at least a short description of the project.</span>
+  </div>
+
+  <div class="photo-note">
+    <Info size={20} stroke-width={1.8} aria-hidden="true" />
+    <p>No photo upload is needed yet. You can provide photos or plans later when the business contacts you.</p>
+  </div>
+
+  <div class="form-footer">
+    <p>Fields marked * are required. By submitting, you agree to the handling of your details as described in the <a href="/privacy/">placeholder Privacy Policy</a>.</p>
+    <button class="button" type="submit" data-submit-button>Send quote request <ArrowRight size={18} aria-hidden="true" /></button>
+  </div>
+  <p class="form-status" data-form-status aria-live="polite"></p>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
+  const service = form?.querySelector<HTMLSelectElement>('#service');
+  const requestedService = new URLSearchParams(window.location.search).get('service');
+  if (service && requestedService && Array.from(service.options).some((option) => option.value === requestedService)) {
+    service.value = requestedService;
+  }
+
+  form?.addEventListener('submit', () => {
+    const button = form.querySelector<HTMLButtonElement>('[data-submit-button]');
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+    if (button && form.checkValidity()) {
+      button.disabled = true;
+      button.textContent = 'Sending request…';
+      if (status) status.textContent = 'Your request is being sent.';
+    }
+  });
+</script>
+
+<style>
+  .quote-form { display: grid; gap: 1.4rem; }
+  .honeypot { position: absolute; left: -9999px; }
+  .field-grid { display: grid; gap: 1.4rem; }
+  .field { display: grid; gap: .5rem; }
+  .field label { font-family: "Archivo Variable", sans-serif; font-size: .72rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
+  .field label > span:not(.optional) { color: var(--amber-deep); }
+  .optional { float: right; color: var(--muted); font-family: "Manrope Variable", sans-serif; font-size: .62rem; font-weight: 500; letter-spacing: 0; text-transform: none; }
+  .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); border-radius: .15rem; padding: .9rem 1rem; background: white; color: var(--ink); transition: border-color .18s ease, box-shadow .18s ease; }
+  .field input, .field select { min-height: 3.4rem; }
+  .field textarea { resize: vertical; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--amber-deep); outline: none; box-shadow: 0 0 0 3px rgba(216,150,63,.18); }
+  .field-hint { color: var(--muted); font-size: .68rem; }
+  .field-error { display: none; color: #a02d24; font-size: .68rem; font-weight: 650; }
+  .field input:user-invalid, .field select:user-invalid, .field textarea:user-invalid { border-color: #a02d24; }
+  .field input:user-invalid ~ .field-error, .field select:user-invalid ~ .field-error, .field textarea:user-invalid ~ .field-error { display: block; }
+  .photo-note { display: flex; align-items: flex-start; gap: .8rem; padding: 1rem; background: var(--cream); }
+  .photo-note svg { flex: 0 0 auto; color: var(--amber-deep); }
+  .photo-note p { margin: 0; color: var(--muted); font-size: .76rem; }
+  .form-footer { display: grid; align-items: center; gap: 1rem; }
+  .form-footer p { margin: 0; color: var(--muted); font-size: .67rem; }
+  .form-footer p a { color: var(--amber-deep); text-decoration: underline; text-underline-offset: 2px; }
+  .form-footer .button { border: 0; cursor: pointer; }
+  .form-footer .button:disabled { cursor: wait; opacity: .7; }
+  .form-status { min-height: 1.2em; margin: 0; color: var(--muted); font-size: .7rem; }
+  @media (min-width: 40rem) { .field-grid { grid-template-columns: repeat(2, 1fr); } .form-footer { grid-template-columns: 1fr auto; } }
+</style>

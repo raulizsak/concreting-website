@@ -1,0 +1,64 @@
+---
+import { ArrowUpRight, Phone } from '@lucide/astro';
+import { siteConfig } from '../config/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-main container">
+    <div class="footer-brand">
+      <a href="/" class="footer-logo">{siteConfig.businessName}</a>
+      <p>Concreting, fencing and outdoor works for Australian homes. All business details and service claims on this demo are temporary placeholders.</p>
+      <a class="footer-phone" href={siteConfig.phoneHref}>
+        <Phone size={18} aria-hidden="true" /> {siteConfig.phoneDisplay}
+      </a>
+    </div>
+
+    <div class="footer-columns">
+      <div>
+        <p class="footer-label">Navigate</p>
+        <nav aria-label="Footer navigation">
+          {siteConfig.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+          <a href="/privacy/">Privacy policy</a>
+        </nav>
+      </div>
+      <div>
+        <p class="footer-label">Demo services</p>
+        <nav aria-label="Services navigation">
+          {siteConfig.services.map((service) => <a href="/services/">{service.name}</a>)}
+        </nav>
+      </div>
+      <div>
+        <p class="footer-label">Contact placeholders</p>
+        <p>{siteConfig.emailDisplay}</p>
+        <p>{siteConfig.serviceArea}</p>
+        <a class="footer-quote" href="/contact/">Request a quote <ArrowUpRight size={17} aria-hidden="true" /></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-base container">
+    <p>© {year} {siteConfig.businessName}. Demo website.</p>
+    <p>No ABN, licence, insurance or service-area claims have been supplied.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer { padding: clamp(4rem, 8vw, 7rem) 0 1.5rem; background: #11120f; color: white; }
+  .footer-main { display: grid; gap: 4rem; }
+  .footer-brand { max-width: 27rem; }
+  .footer-logo { font-family: "Archivo Variable", sans-serif; font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 760; letter-spacing: -.03em; text-transform: uppercase; }
+  .footer-brand > p { margin: 1.25rem 0 1.5rem; color: rgba(255,255,255,.56); font-size: .9rem; }
+  .footer-phone { display: inline-flex; align-items: center; gap: .6rem; color: var(--amber); font-family: "Archivo Variable", sans-serif; font-weight: 740; letter-spacing: .04em; }
+  .footer-columns { display: grid; gap: 2.5rem; }
+  .footer-label { margin: 0 0 1rem !important; color: rgba(255,255,255,.62) !important; font-family: "Archivo Variable", sans-serif; font-size: .65rem !important; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+  .footer-columns nav { display: grid; gap: .65rem; }
+  .footer-columns a, .footer-columns p { margin: 0 0 .7rem; color: rgba(255,255,255,.76); font-size: .86rem; }
+  .footer-columns a:hover { color: var(--amber); }
+  .footer-quote { display: inline-flex; align-items: center; gap: .45rem; margin-top: .65rem !important; color: var(--amber) !important; font-weight: 750; }
+  .footer-base { display: flex; flex-direction: column; gap: .3rem; border-top: 1px solid rgba(255,255,255,.12); margin-top: 4rem; padding-top: 1.5rem; }
+  .footer-base p { margin: 0; color: rgba(255,255,255,.62); font-size: .66rem; letter-spacing: .03em; }
+  @media (min-width: 48rem) { .footer-columns { grid-template-columns: repeat(3, 1fr); } .footer-base { flex-direction: row; justify-content: space-between; } }
+  @media (min-width: 64rem) { .footer-main { grid-template-columns: .85fr 1.35fr; } }
+</style>

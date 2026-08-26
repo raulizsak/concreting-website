@@ -1,0 +1,206 @@
+---
+import { ArrowLeft, ArrowRight, Expand, MapPin, X } from '@lucide/astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ResponsiveImage from '../../components/ResponsiveImage.astro';
+import SectionCta from '../../components/SectionCta.astro';
+
+export async function getStaticPaths() {
+  const projects = (await getCollection('projects'))
+    .sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
+
+  return projects.map((project, index) => ({
+    params: { slug: project.data.slug },
+    props: {
+      project,
+      previous: projects[index - 1] ?? null,
+      next: projects[index + 1] ?? null,
+    },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  previous: CollectionEntry<'projects'> | null;
+  next: CollectionEntry<'projects'> | null;
+}
+
+const { project, previous, next } = Astro.props;
+const { Content } = await render(project);
+const gallery = project.data.gallery;
+---
+
+<BaseLayout
+  title={`${project.data.title} | Your Business Name`}
+  description={project.data.summary}
+  image={`${project.data.coverImage}-1200.webp`}
+  imageAlt={project.data.coverAlt}
+>
+  <article>
+    <header class="project-hero">
+      <div class="container project-hero-inner">
+        <p class="sample-flag">Sample project · Demo content</p>
+        <p class="project-category">{project.data.categories.join(' · ')}</p>
+        <h1 class="display">{project.data.title}</h1>
+        <div class="project-intro">
+          <p>{project.data.summary}</p>
+          <p class="project-location"><MapPin size={17} aria-hidden="true" /> {project.data.location}</p>
+        </div>
+      </div>
+    </header>
+
+    <div class="project-cover container">
+      <ResponsiveImage
+        src={project.data.coverImage}
+        alt={project.data.coverAlt}
+        loading="eager"
+        fetchpriority="high"
+        sizes="(min-width: 1440px) 1312px, 100vw"
+      />
+    </div>
+
+    <section class="project-story section">
+      <div class="container story-grid">
+        <div>
+          <p class="eyebrow">Project overview</p>
+          <p class="story-label">Placeholder narrative</p>
+        </div>
+        <div class="prose">
+          <Content />
+          <p class="project-ethics">All photography on this page was generated for the mockup. It must be replaced with genuine, approved project photography before this project is described as client work.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery-section">
+      <div class="container">
+        <div class="gallery-heading">
+          <div>
+            <p class="eyebrow">Project gallery</p>
+            <h2 class="display">The details</h2>
+          </div>
+          <p>Select any image to view it larger. Demo imagery only.</p>
+        </div>
+        <div class="gallery-grid">
+          {gallery.map((item, index) => (
+            <button class="gallery-item" type="button" data-gallery-index={index} data-image={`${item.image}-1200.webp`} data-alt={item.alt} aria-label={`Open image ${index + 1} of ${gallery.length}: ${item.alt}`}>
+              <ResponsiveImage src={item.image} alt={item.alt} sizes="(min-width: 768px) 50vw, 100vw" />
+              <span><Expand size={18} aria-hidden="true" /> View image</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {(previous || next) && (
+      <nav class="project-navigation container" aria-label="Project navigation">
+        {previous ? (
+          <a href={`/projects/${previous.data.slug}/`}>
+            <span><ArrowLeft size={17} aria-hidden="true" /> Previous project</span>
+            <strong>{previous.data.title}</strong>
+          </a>
+        ) : <span></span>}
+        {next ? (
+          <a href={`/projects/${next.data.slug}/`} class="next-project">
+            <span>Next project <ArrowRight size={17} aria-hidden="true" /></span>
+            <strong>{next.data.title}</strong>
+          </a>
+        ) : <span></span>}
+      </nav>
+    )}
+  </article>
+
+  <dialog class="lightbox" data-lightbox aria-label="Project image viewer">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" type="button" aria-label="Close image viewer"><X size={24} aria-hidden="true" /></button>
+      <img src="" alt="" width="1200" height="900" />
+      <div class="lightbox-controls">
+        <button type="button" data-lightbox-prev><ArrowLeft size={18} aria-hidden="true" /> Previous</button>
+        <p aria-live="polite"></p>
+        <button type="button" data-lightbox-next>Next <ArrowRight size={18} aria-hidden="true" /></button>
+      </div>
+    </div>
+  </dialog>
+
+  <SectionCta title="Have a similar project?" copy="Request a free quote or speak with us about what you are planning." />
+</BaseLayout>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-gallery-index]'));
+  const image = dialog?.querySelector<HTMLImageElement>('img');
+  const count = dialog?.querySelector<HTMLParagraphElement>('.lightbox-controls p');
+  let activeIndex = 0;
+
+  const showImage = (index: number) => {
+    if (!image || !triggers.length) return;
+    activeIndex = (index + triggers.length) % triggers.length;
+    const trigger = triggers[activeIndex];
+    image.src = trigger.dataset.image ?? '';
+    image.alt = trigger.dataset.alt ?? '';
+    if (count) count.textContent = `${activeIndex + 1} / ${triggers.length}`;
+  };
+
+  triggers.forEach((trigger, index) => {
+    trigger.addEventListener('click', () => {
+      showImage(index);
+      dialog?.showModal();
+    });
+  });
+  dialog?.querySelector('.lightbox-close')?.addEventListener('click', () => dialog.close());
+  dialog?.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => showImage(activeIndex - 1));
+  dialog?.querySelector('[data-lightbox-next]')?.addEventListener('click', () => showImage(activeIndex + 1));
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+  dialog?.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowLeft') showImage(activeIndex - 1);
+    if (event.key === 'ArrowRight') showImage(activeIndex + 1);
+  });
+</script>
+
+<style>
+  .project-hero { padding: clamp(10rem, 18vw, 14rem) 0 clamp(3.5rem, 7vw, 6rem); background: var(--ink); color: white; }
+  .sample-flag { display: inline-flex; margin: 0 0 2rem; padding: .5rem .65rem; background: var(--amber); color: var(--ink); font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .project-category { margin: 0 0 .75rem; color: rgba(255,255,255,.6); font-family: "Archivo Variable", sans-serif; font-size: .72rem; font-weight: 720; letter-spacing: .12em; text-transform: uppercase; }
+  .project-hero .display { max-width: 14ch; overflow-wrap: break-word; font-size: clamp(2.55rem, 8vw, 7.5rem); }
+  .project-intro { display: flex; flex-direction: column; gap: 1rem; max-width: 47rem; margin-top: 2rem; }
+  .project-intro > p:first-child { margin: 0; color: rgba(255,255,255,.72); font-size: clamp(1rem, 2vw, 1.2rem); }
+  .project-location { display: flex; align-items: center; gap: .5rem; margin: 0; color: var(--amber); font-size: .78rem; font-weight: 720; letter-spacing: .05em; text-transform: uppercase; }
+  .project-cover { position: relative; z-index: 2; overflow: hidden; aspect-ratio: 4 / 3; margin-top: clamp(-2rem, -4vw, -4rem); background: var(--concrete); box-shadow: var(--shadow); }
+  .project-cover :global(picture), .project-cover :global(img) { width: 100%; height: 100%; }
+  .project-cover :global(img) { object-fit: cover; }
+  .project-story { background: var(--paper); }
+  .story-grid { display: grid; gap: 2rem; }
+  .story-label { margin: 0; color: var(--muted); font-size: .72rem; }
+  .prose { max-width: 49rem; font-size: clamp(1rem, 1.8vw, 1.15rem); }
+  .prose :global(p) { margin: 0 0 1.4rem; }
+  .project-ethics { border-left: 2px solid var(--amber); padding-left: 1rem; color: var(--muted); font-size: .76rem; }
+  .gallery-section { padding-block: clamp(4.5rem, 9vw, 8rem); background: var(--cream); }
+  .gallery-heading { display: grid; align-items: end; gap: 1.5rem; margin-bottom: 2.5rem; }
+  .gallery-heading .display { font-size: clamp(2.8rem, 6vw, 5.5rem); }
+  .gallery-heading > p { max-width: 25rem; margin: 0; color: var(--muted); font-size: .8rem; }
+  .gallery-grid { display: grid; gap: 1rem; }
+  .gallery-item { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 0; padding: 0; background: var(--concrete); cursor: zoom-in; }
+  .gallery-item :global(picture), .gallery-item :global(img) { width: 100%; height: 100%; }
+  .gallery-item :global(img) { object-fit: cover; transition: transform .45s ease; }
+  .gallery-item:hover :global(img) { transform: scale(1.025); }
+  .gallery-item > span { position: absolute; right: 1rem; bottom: 1rem; display: flex; align-items: center; gap: .4rem; padding: .55rem .7rem; background: rgba(23,24,21,.85); color: white; font-size: .64rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; backdrop-filter: blur(8px); }
+  .project-navigation { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding-block: 2rem; }
+  .project-navigation > a { display: grid; align-content: center; min-height: 7rem; border: 1px solid var(--line); padding: 1rem; }
+  .project-navigation span { display: flex; align-items: center; gap: .4rem; color: var(--muted); font-size: .65rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; }
+  .project-navigation strong { display: none; margin-top: .5rem; font-family: "Archivo Variable", sans-serif; font-size: 1rem; line-height: 1.2; }
+  .next-project { text-align: right; }
+  .next-project span { justify-content: flex-end; }
+  .lightbox { width: min(100% - 1rem, 80rem); max-width: none; max-height: calc(100dvh - 1rem); border: 0; padding: 0; background: transparent; color: white; }
+  .lightbox::backdrop { background: rgba(10,11,9,.93); backdrop-filter: blur(8px); }
+  .lightbox-inner { position: relative; display: grid; max-height: calc(100dvh - 1rem); grid-template-rows: 1fr auto; gap: .75rem; }
+  .lightbox img { width: 100%; max-height: calc(100dvh - 5.5rem); object-fit: contain; }
+  .lightbox-close { position: absolute; top: .75rem; right: .75rem; z-index: 2; display: grid; width: 3rem; height: 3rem; place-items: center; border: 1px solid rgba(255,255,255,.4); background: rgba(10,11,9,.65); color: white; cursor: pointer; }
+  .lightbox-controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem; }
+  .lightbox-controls button { display: flex; align-items: center; gap: .45rem; border: 0; padding: .75rem; background: transparent; color: white; font-size: .7rem; font-weight: 760; text-transform: uppercase; cursor: pointer; }
+  .lightbox-controls button:last-child { justify-content: flex-end; }
+  .lightbox-controls p { margin: 0; color: rgba(255,255,255,.6); font-size: .7rem; }
+  @media (min-width: 48rem) { .project-cover { aspect-ratio: 16 / 9; } .gallery-grid { grid-template-columns: repeat(2, 1fr); } .project-navigation strong { display: block; } }
+  @media (min-width: 64rem) { .project-intro { flex-direction: row; align-items: flex-end; justify-content: space-between; } .story-grid { grid-template-columns: .5fr 1.5fr; } .gallery-heading { grid-template-columns: 1.4fr .6fr; } }
+</style>

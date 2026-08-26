@@ -1,0 +1,81 @@
+---
+import { ArrowRight, Check } from '@lucide/astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ResponsiveImage from '../../components/ResponsiveImage.astro';
+import SectionCta from '../../components/SectionCta.astro';
+import { siteConfig } from '../../config/site';
+
+const serviceImages = ['/images/demo/driveway', '/images/demo/fence-charcoal', '/images/demo/backyard'];
+---
+
+<BaseLayout
+  title="Services | Concreting, Fencing & Outdoor Works"
+  description="Explore demo service layouts for residential concreting, fencing and outdoor works. Exact services are to be confirmed."
+>
+  <PageHero
+    eyebrow="Services"
+    title="Outdoor solutions for the whole home."
+    intro="From the driveway to the back fence, this page is designed to explain each confirmed service clearly and guide homeowners towards a straightforward quote request."
+    demoNote="All listed services and descriptions are configurable demo content until the client confirms the final offering."
+  />
+
+  <section class="section services-list">
+    <div class="container">
+      {siteConfig.services.map((service, index) => (
+        <article class:list={['service-row', index % 2 === 1 && 'service-row--reverse']} id={service.slug}>
+          <div class="service-media">
+            <ResponsiveImage src={serviceImages[index]} alt={`Generated demo image representing ${service.name.toLowerCase()} services`} sizes="(min-width: 1024px) 50vw, 100vw" />
+            <span>Demo imagery</span>
+          </div>
+          <div class="service-content">
+            <p class="service-index">0{index + 1} / 03</p>
+            <p class="eyebrow">Demo service</p>
+            <h2 class="display">{service.name}</h2>
+            <p class="service-summary">{service.summary}</p>
+            <p class="service-note">Examples shown for layout purposes. Remove or revise anything the business does not offer.</p>
+            <ul>
+              {service.examples.map((example) => <li><Check size={17} stroke-width={2} aria-hidden="true" /> {example}</li>)}
+            </ul>
+            <a class="button" href={`/contact/?service=${service.slug}`}>Request a quote <ArrowRight size={18} aria-hidden="true" /></a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="expandable-note">
+    <div class="container note-grid">
+      <p class="eyebrow">Built to grow</p>
+      <div>
+        <h2 class="display">Individual service pages can come next.</h2>
+        <p>The current structure keeps each service centralised. When the client confirms the offer and provides location-specific information, dedicated pages such as <code>/services/concreting/</code> can be added without redesigning the website.</p>
+      </div>
+    </div>
+  </section>
+
+  <SectionCta title="Need more than one service?" copy="Tell us about the whole outdoor project and we can discuss the right next step." />
+</BaseLayout>
+
+<style>
+  .services-list { background: var(--paper); }
+  .service-row { display: grid; align-items: center; gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(3rem, 7vw, 6rem); border-top: 1px solid var(--line); }
+  .service-row:first-child { padding-top: 0; border-top: 0; }
+  .service-media { position: relative; overflow: hidden; aspect-ratio: 4 / 3; background: var(--concrete); }
+  .service-media :global(picture), .service-media :global(img) { width: 100%; height: 100%; }
+  .service-media :global(img) { object-fit: cover; }
+  .service-media > span { position: absolute; bottom: 1rem; left: 1rem; padding: .45rem .6rem; background: rgba(23,24,21,.84); color: white; font-size: .6rem; font-weight: 780; letter-spacing: .09em; text-transform: uppercase; }
+  .service-index { margin: 0 0 2rem; color: var(--muted); font-family: "Archivo Variable", sans-serif; font-size: .68rem; font-weight: 730; letter-spacing: .1em; }
+  .service-content .display { font-size: clamp(3rem, 7vw, 6.4rem); }
+  .service-summary { max-width: 35rem; margin: 1.5rem 0 0; font-size: clamp(1rem, 1.8vw, 1.2rem); }
+  .service-note { max-width: 32rem; border-left: 2px solid var(--amber); margin: 1rem 0 0; padding-left: 1rem; color: var(--muted); font-size: .75rem; }
+  .service-content ul { display: grid; gap: .6rem; margin: 1.5rem 0 2rem; padding: 0; list-style: none; }
+  .service-content li { display: flex; align-items: center; gap: .7rem; color: var(--muted); font-size: .86rem; }
+  .service-content li svg { color: var(--amber-deep); }
+  .expandable-note { padding-block: clamp(4.5rem, 9vw, 8rem); background: var(--cream); }
+  .note-grid { display: grid; gap: 2rem; }
+  .note-grid .display { max-width: 14ch; font-size: clamp(2.8rem, 6vw, 5.5rem); }
+  .note-grid p:last-child { max-width: 46rem; margin: 1.5rem 0 0; color: var(--muted); }
+  .note-grid code { padding: .15rem .3rem; background: rgba(23,24,21,.07); color: var(--ink); font-size: .85em; }
+  @media (min-width: 64rem) { .service-row { grid-template-columns: 1fr 1fr; } .service-row--reverse .service-media { order: 2; } .service-row--reverse .service-content { order: 1; } .note-grid { grid-template-columns: .55fr 1.45fr; } }
+</style>

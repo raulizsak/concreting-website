@@ -1,0 +1,103 @@
+---
+import { ArrowRight, Check } from '@lucide/astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ResponsiveImage from '../../components/ResponsiveImage.astro';
+import SectionCta from '../../components/SectionCta.astro';
+---
+
+<BaseLayout
+  title="About Us | Your Business Name"
+  description="A placeholder About page prepared for the client's genuine business story, team, approach and service area."
+>
+  <PageHero
+    eyebrow="About us"
+    title="Built around good work and clear service."
+    intro="This page is ready to introduce the people behind the business, explain how they approach each job and give homeowners confidence before they enquire."
+    demoNote="The team image and all business-story content below are placeholders. No history, experience or credentials have been invented."
+  />
+
+  <section class="section about-intro">
+    <div class="container about-grid">
+      <div class="about-media">
+        <ResponsiveImage
+          src="/images/demo/team"
+          alt="Generated demo image of two tradespeople reviewing plans beside a driveway"
+          variant="team"
+          sizes="(min-width: 1024px) 50vw, 100vw"
+        />
+        <span>Temporary owner / team image</span>
+      </div>
+      <div class="about-copy">
+        <p class="eyebrow">The business story</p>
+        <h2 class="display">Your story belongs here.</h2>
+        <p class="lead">Replace this section with the real reason the business started, the kinds of customers it serves and what matters most on every job.</p>
+        <p>We have intentionally avoided claiming years of experience, licences, insurance, awards or memberships. Once those facts are supplied and verified, the strongest details can be incorporated naturally rather than presented as empty badges.</p>
+        <a class="text-link" href="/contact/">Start a conversation <ArrowRight size={18} aria-hidden="true" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section approach-section">
+    <div class="container">
+      <div class="approach-heading">
+        <p class="eyebrow">Approach to work</p>
+        <h2 class="display">Editable talking points for the client meeting.</h2>
+      </div>
+      <div class="approach-grid">
+        {[
+          ['Discuss the scope', 'Explain how the business learns what the homeowner needs and assesses the site.'],
+          ['Plan the work', 'Describe how details, timing, access and materials are confirmed before work begins.'],
+          ['Complete with care', 'Replace this with the client’s genuine standards for communication, tidiness and finish.'],
+        ].map(([title, copy], index) => (
+          <article>
+            <span>0{index + 1}</span>
+            <Check size={21} stroke-width={1.8} aria-hidden="true" />
+            <h3>{title}</h3>
+            <p>{copy}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="about-placeholders">
+    <div class="container placeholder-grid">
+      <div>
+        <p class="eyebrow">Details to add</p>
+        <h2 class="display">Experience. Team. Area serviced.</h2>
+      </div>
+      <p>The layout has room for genuine experience, team information and the confirmed service area. These should only be added after the client approves the exact wording and any supporting credentials.</p>
+    </div>
+  </section>
+
+  <SectionCta />
+</BaseLayout>
+
+<style>
+  .about-intro { background: var(--paper); }
+  .about-grid { display: grid; align-items: center; gap: clamp(2.5rem, 7vw, 7rem); }
+  .about-media { position: relative; }
+  .about-media :global(picture), .about-media :global(img) { width: 100%; height: 100%; }
+  .about-media :global(img) { object-fit: cover; }
+  .about-media > span { position: absolute; bottom: 1rem; left: 1rem; padding: .5rem .65rem; background: rgba(23,24,21,.85); color: white; font-size: .62rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; }
+  .about-copy .display { max-width: 12ch; font-size: clamp(2.8rem, 6vw, 5.4rem); }
+  .about-copy .lead { margin: 1.5rem 0 0; font-size: clamp(1.05rem, 2vw, 1.25rem); }
+  .about-copy > p:not(.eyebrow):not(.lead) { margin: 1rem 0 0; color: var(--muted); font-size: .9rem; }
+  .text-link { display: inline-flex; align-items: center; gap: .45rem; margin-top: 1.5rem; color: var(--amber-deep); font-size: .72rem; font-weight: 800; letter-spacing: .075em; text-transform: uppercase; }
+  .approach-section { background: var(--cream); }
+  .approach-heading { display: grid; gap: 1rem; margin-bottom: 3rem; }
+  .approach-heading .display { max-width: 15ch; font-size: clamp(2.8rem, 6vw, 5.5rem); }
+  .approach-grid { display: grid; gap: 1rem; }
+  .approach-grid article { position: relative; min-height: 17rem; padding: 1.5rem; background: var(--paper); }
+  .approach-grid article > span { color: var(--amber-deep); font-family: "Archivo Variable", sans-serif; font-size: .68rem; font-weight: 760; }
+  .approach-grid article > svg { position: absolute; top: 1.5rem; right: 1.5rem; color: var(--amber-deep); }
+  .approach-grid h3 { margin: 5rem 0 .75rem; font-family: "Archivo Variable", sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -.035em; text-transform: uppercase; }
+  .approach-grid p { margin: 0; color: var(--muted); font-size: .82rem; }
+  .about-placeholders { padding-block: clamp(4.5rem, 9vw, 8rem); background: var(--paper); }
+  .placeholder-grid { display: grid; gap: 2rem; }
+  .placeholder-grid .display { max-width: 14ch; font-size: clamp(2.8rem, 6vw, 5.5rem); }
+  .placeholder-grid > p { max-width: 38rem; margin: 0; color: var(--muted); }
+  @media (min-width: 48rem) { .approach-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 64rem) { .about-grid { grid-template-columns: 1fr 1fr; } .approach-heading, .placeholder-grid { grid-template-columns: 1fr 1fr; align-items: end; } }
+</style>

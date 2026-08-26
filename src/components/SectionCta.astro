@@ -1,0 +1,40 @@
+---
+import { ArrowRight, Phone } from '@lucide/astro';
+import { siteConfig } from '../config/site';
+
+interface Props {
+  title?: string;
+  copy?: string;
+}
+const {
+  title = 'Ready to start your project?',
+  copy = 'Request a free quote or speak with us about your project.',
+} = Astro.props;
+---
+
+<section class="section-cta">
+  <div class="cta-lines" aria-hidden="true"></div>
+  <div class="container cta-inner">
+    <div>
+      <p class="eyebrow">Let’s talk</p>
+      <h2 class="display">{title}</h2>
+      <p>{copy}</p>
+    </div>
+    <div class="cta-actions">
+      <a class="button" href="/contact/">Get a free quote <ArrowRight size={18} aria-hidden="true" /></a>
+      <a class="button button--outline" href={siteConfig.phoneHref}><Phone size={17} aria-hidden="true" /> Call now</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .section-cta { position: relative; overflow: hidden; padding-block: clamp(4.5rem, 9vw, 8rem); background: #242521; color: white; }
+  .cta-lines { position: absolute; inset: 0 0 0 55%; opacity: .16; background: repeating-linear-gradient(135deg, transparent 0 3rem, rgba(255,255,255,.16) 3rem calc(3rem + 1px)); }
+  .cta-inner { position: relative; display: grid; align-items: end; gap: 2.5rem; }
+  .section-cta .eyebrow { color: var(--amber); }
+  .section-cta .display { max-width: 14ch; font-size: clamp(2.8rem, 7vw, 6.5rem); }
+  .section-cta p:not(.eyebrow) { max-width: 34rem; margin: 1.25rem 0 0; color: rgba(255,255,255,.68); }
+  .cta-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  @media (min-width: 64rem) { .cta-inner { grid-template-columns: 1.5fr .5fr; } .cta-actions { justify-content: flex-end; } }
+  @media (max-width: 35rem) { .cta-actions .button { width: 100%; } }
+</style>
