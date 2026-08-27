@@ -4,7 +4,7 @@ export const siteConfig = {
   phoneHref: 'tel:04XXXXXXXX',
   emailDisplay: 'hello@[DOMAIN PLACEHOLDER]',
   emailHref: 'mailto:hello@example.com',
-  serviceArea: '[SERVICE AREA PLACEHOLDER]',
+  serviceArea: 'Greater Melbourne',
   tagline: 'Quality outdoor work built for Australian homes.',
   description:
     'Demo website for an Australian residential concreting, fencing and outdoor works business.',

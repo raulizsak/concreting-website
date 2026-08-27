@@ -2,7 +2,7 @@
 
 A premium, mobile-first static website mockup for an Australian residential concreting, fencing and outdoor works business. Astro generates static HTML, Netlify hosts it, Netlify Forms receives quote requests, and projects are managed as files—there is no database, CMS, authentication or API server.
 
-> **Demo status:** `YOUR BUSINESS NAME`, all contact details, service-area wording, project information, testimonials and service claims are placeholders. The generated imagery is presentation material and must not be described as work completed by the client.
+> **Demo status:** `YOUR BUSINESS NAME`, contact details, project information, testimonials and service claims are placeholders. Greater Melbourne is the confirmed working service-area direction, while individual job travel remains subject to confirmation. The generated imagery is presentation material and must not be described as work completed by the client.
 
 ## Stack
 
@@ -12,6 +12,7 @@ A premium, mobile-first static website mockup for an Australian residential conc
 - Self-hosted Archivo and Manrope variable fonts
 - AVIF and WebP responsive demo images
 - Netlify Forms for enquiries
+- Leaflet with OpenStreetMap tiles for the interactive service-area map
 
 Astro was selected because this is a content-led brochure site that benefits from prebuilt HTML, minimal JavaScript, fast loading and straightforward Netlify deployment.
 
@@ -72,6 +73,22 @@ Edit `src/config/site.ts` to change the central business information:
 - services and example sub-services
 
 Changing the data there updates the header, footer, calls to action and relevant pages without searching through many components. Review the separate placeholder copy in `src/pages/about/index.astro`, `src/pages/privacy/index.astro` and the content files before launch.
+
+## Service-area checker
+
+`src/components/ServiceAreaChecker.astro` provides a permanently visible suburb/postcode search, Greater Melbourne coverage result and interactive map. The local autocomplete file contains Victorian delivery localities, so the checker can also give a useful response for regional searches without calling a geocoding API.
+
+- `public/data/vic-localities.json` is generated from the public-domain [Matthew Proctor Australian Postcodes dataset](https://github.com/matthewproctor/australianpostcodes).
+- `public/data/greater-melbourne.geojson` uses the [Australian Bureau of Statistics ASGS 2026 Greater Melbourne boundary](https://geo.abs.gov.au/arcgis/rest/services/ASGS2026/GCCSA/MapServer).
+- Map tiles are supplied by OpenStreetMap and retain the required on-map attribution.
+
+Refresh both generated files when geographic data changes:
+
+```bash
+node scripts/generate-location-data.mjs
+```
+
+The checker is a practical enquiry guide rather than a contractual travel guarantee. Confirm final travel availability during quoting.
 
 ## Add a project
 
@@ -167,7 +184,7 @@ No LocalBusiness structured data is included yet because the real business ident
 Collect and confirm:
 
 - registered/trading business name and approved logo/brand system
-- real phone, email, hours and service area
+- real phone, email, hours and exact travel limits within/around Greater Melbourne
 - exact confirmed services and exclusions
 - genuine business story, owner/team names and approved photograph
 - verified licence, insurance, warranty, membership or experience claims (only if the client wants them published)

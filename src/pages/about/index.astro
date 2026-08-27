@@ -42,7 +42,6 @@ import SectionCta from '../../components/SectionCta.astro';
     <div class="container">
       <div class="approach-heading">
         <p class="eyebrow">Approach to work</p>
-        <h2 class="display">Editable talking points for the client meeting.</h2>
       </div>
       <div class="approach-grid">
         {[
@@ -86,18 +85,18 @@ import SectionCta from '../../components/SectionCta.astro';
   .about-copy > p:not(.eyebrow):not(.lead) { margin: 1rem 0 0; color: var(--muted); font-size: .9rem; }
   .text-link { display: inline-flex; align-items: center; gap: .45rem; margin-top: 1.5rem; color: var(--amber-deep); font-size: .72rem; font-weight: 800; letter-spacing: .075em; text-transform: uppercase; }
   .approach-section { background: var(--cream); }
-  .approach-heading { display: grid; gap: 1rem; margin-bottom: 3rem; }
-  .approach-heading .display { max-width: 15ch; font-size: clamp(2.8rem, 6vw, 5.5rem); }
+  .approach-section { padding-block: clamp(3.75rem, 7vw, 6rem); }
+  .approach-heading { margin-bottom: 1.5rem; }
   .approach-grid { display: grid; gap: 1rem; }
-  .approach-grid article { position: relative; min-height: 17rem; padding: 1.5rem; background: var(--paper); }
+  .approach-grid article { position: relative; min-height: 13.5rem; padding: 1.5rem; background: var(--paper); }
   .approach-grid article > span { color: var(--amber-deep); font-family: "Archivo Variable", sans-serif; font-size: .68rem; font-weight: 760; }
   .approach-grid article > svg { position: absolute; top: 1.5rem; right: 1.5rem; color: var(--amber-deep); }
-  .approach-grid h3 { margin: 5rem 0 .75rem; font-family: "Archivo Variable", sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -.035em; text-transform: uppercase; }
+  .approach-grid h3 { margin: 3.25rem 0 .75rem; font-family: "Archivo Variable", sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -.035em; text-transform: uppercase; }
   .approach-grid p { margin: 0; color: var(--muted); font-size: .82rem; }
   .about-placeholders { padding-block: clamp(4.5rem, 9vw, 8rem); background: var(--paper); }
   .placeholder-grid { display: grid; gap: 2rem; }
   .placeholder-grid .display { max-width: 14ch; font-size: clamp(2.8rem, 6vw, 5.5rem); }
   .placeholder-grid > p { max-width: 38rem; margin: 0; color: var(--muted); }
   @media (min-width: 48rem) { .approach-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (min-width: 64rem) { .about-grid { grid-template-columns: 1fr 1fr; } .approach-heading, .placeholder-grid { grid-template-columns: 1fr 1fr; align-items: end; } }
+  @media (min-width: 64rem) { .about-grid { grid-template-columns: 1fr 1fr; } .placeholder-grid { grid-template-columns: 1fr 1fr; align-items: end; } }
 </style>

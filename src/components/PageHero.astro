@@ -4,12 +4,13 @@ interface Props {
   title: string;
   intro: string;
   demoNote?: string;
+  compact?: boolean;
 }
 
-const { eyebrow, title, intro, demoNote } = Astro.props;
+const { eyebrow, title, intro, demoNote, compact = false } = Astro.props;
 ---
 
-<section class="page-hero">
+<section class:list={['page-hero', compact && 'page-hero--compact']}>
   <div class="page-hero-grid" aria-hidden="true"></div>
   <div class="container page-hero-inner">
     <p class="eyebrow">{eyebrow}</p>
@@ -27,7 +28,8 @@ const { eyebrow, title, intro, demoNote } = Astro.props;
   .page-hero-grid { position: absolute; inset: 0 0 0 52%; opacity: .13; background-image: linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px); background-size: 4.5rem 4.5rem; }
   .page-hero-inner { position: relative; z-index: 1; }
   .page-hero .eyebrow { color: var(--amber); }
-  .page-hero .display { max-width: 13ch; overflow-wrap: break-word; font-size: clamp(2.6rem, 10vw, 8.2rem); }
+  .page-hero .display { max-width: 13ch; overflow-wrap: break-word; font-size: clamp(2.55rem, 9vw, 8rem); }
+  .page-hero--compact { padding: clamp(8rem, 14vw, 10.5rem) 0 clamp(3.75rem, 6vw, 5.5rem); }
   .page-hero-copy { display: grid; gap: 1rem; max-width: 46rem; margin-top: 2rem; }
   .page-hero-copy p { margin: 0; color: rgba(255,255,255,.76); font-size: clamp(1rem, 2vw, 1.22rem); }
   .page-demo-note { border-left: 2px solid var(--amber); padding-left: 1rem; font-size: .76rem !important; }

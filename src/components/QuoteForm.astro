@@ -75,10 +75,13 @@ import { ArrowRight, Info } from '@lucide/astro';
 <script>
   const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
   const service = form?.querySelector<HTMLSelectElement>('#service');
+  const location = form?.querySelector<HTMLInputElement>('#location');
   const requestedService = new URLSearchParams(window.location.search).get('service');
+  const requestedLocation = new URLSearchParams(window.location.search).get('location');
   if (service && requestedService && Array.from(service.options).some((option) => option.value === requestedService)) {
     service.value = requestedService;
   }
+  if (location && requestedLocation) location.value = requestedLocation;
 
   form?.addEventListener('submit', () => {
     const button = form.querySelector<HTMLButtonElement>('[data-submit-button]');
@@ -95,12 +98,12 @@ import { ArrowRight, Info } from '@lucide/astro';
   .quote-form { display: grid; gap: 1.4rem; }
   .honeypot { position: absolute; left: -9999px; }
   .field-grid { display: grid; gap: 1.4rem; }
-  .field { display: grid; gap: .5rem; }
+  .field { display: grid; align-content: start; gap: .5rem; }
   .field label { font-family: "Archivo Variable", sans-serif; font-size: .72rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; }
   .field label > span:not(.optional) { color: var(--amber-deep); }
   .optional { float: right; color: var(--muted); font-family: "Manrope Variable", sans-serif; font-size: .62rem; font-weight: 500; letter-spacing: 0; text-transform: none; }
   .field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); border-radius: .15rem; padding: .9rem 1rem; background: white; color: var(--ink); transition: border-color .18s ease, box-shadow .18s ease; }
-  .field input, .field select { min-height: 3.4rem; }
+  .field input, .field select { height: 3.4rem; min-height: 3.4rem; }
   .field textarea { resize: vertical; }
   .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--amber-deep); outline: none; box-shadow: 0 0 0 3px rgba(216,150,63,.18); }
   .field-hint { color: var(--muted); font-size: .68rem; }

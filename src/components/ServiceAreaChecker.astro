@@ -1,0 +1,358 @@
+---
+import { ArrowRight, MapPin, Search } from '@lucide/astro';
+import 'leaflet/dist/leaflet.css';
+---
+
+<section class="service-area-section" data-service-area>
+  <div class="container service-area-grid">
+    <div class="service-map-shell">
+      <div
+        class="service-map"
+        data-service-map
+        role="img"
+        aria-label="Interactive map showing the Greater Melbourne service area, starting from Cardinia"
+      ></div>
+      <div class="map-loading" data-map-loading>Loading coverage map…</div>
+      <div class="map-key" aria-hidden="true">
+        <span><i class="area-swatch"></i> Greater Melbourne</span>
+        <span><i class="base-swatch"></i> Cardinia starting point</span>
+      </div>
+    </div>
+
+    <div class="area-copy">
+      <p class="eyebrow">Service area</p>
+      <h2 class="display">From Cardinia<br />to Greater Melbourne.</h2>
+      <p class="area-lead">We work across Greater Melbourne, with Cardinia as our starting point.</p>
+      <p class="area-support">Enter your suburb for a quick check. Just outside the usual area? Send it through anyway—depending on the job, we may still be able to help.</p>
+
+      <div class="location-checker is-expanded" data-location-checker>
+        <div class="checker-row">
+          <div class="location-field" id="location-checker-field" data-location-field>
+            <label for="service-suburb">Your suburb or postcode</label>
+            <div class="input-wrap">
+              <Search size={18} stroke-width={1.8} aria-hidden="true" />
+              <input
+                id="service-suburb"
+                type="text"
+                inputmode="search"
+                autocomplete="off"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-controls="suburb-suggestions"
+                placeholder="Start typing a Victorian suburb"
+                data-location-input
+              />
+              <ul id="suburb-suggestions" class="suggestions" role="listbox" data-suggestions hidden></ul>
+            </div>
+          </div>
+          <button
+            class="checker-toggle"
+            type="button"
+            data-checker-toggle
+          >
+            <span>Check suburb</span>
+            <ArrowRight size={18} aria-hidden="true" />
+          </button>
+        </div>
+        <div class="checker-result" data-checker-result aria-live="polite" hidden></div>
+      </div>
+
+      <p class="area-note"><MapPin size={16} stroke-width={1.8} aria-hidden="true" /> This checker is a practical guide. Final travel and job availability are confirmed when you request a quote.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  type LocalityTuple = [string, string, number, number, boolean];
+  type LocalityData = { localities: LocalityTuple[] };
+
+  const section = document.querySelector<HTMLElement>('[data-service-area]');
+  const toggle = section?.querySelector<HTMLButtonElement>('[data-checker-toggle]');
+  const input = section?.querySelector<HTMLInputElement>('[data-location-input]');
+  const suggestions = section?.querySelector<HTMLUListElement>('[data-suggestions]');
+  const result = section?.querySelector<HTMLElement>('[data-checker-result]');
+  const mapElement = section?.querySelector<HTMLElement>('[data-service-map]');
+  const mapLoading = section?.querySelector<HTMLElement>('[data-map-loading]');
+
+  let localityPromise: Promise<LocalityTuple[]> | undefined;
+  let localities: LocalityTuple[] = [];
+  let filteredSuggestions: LocalityTuple[] = [];
+  let activeSuggestion = -1;
+  let mapInstance: Awaited<ReturnType<typeof initialiseMap>> | undefined;
+
+  const titleCase = (value: string) => value
+    .toLocaleLowerCase('en-AU')
+    .replace(/(^|[\s/-])([a-z])/g, (_, prefix, letter) => `${prefix}${letter.toLocaleUpperCase('en-AU')}`);
+
+  const localityLabel = ([suburb, postcode]: LocalityTuple) => `${titleCase(suburb)}, VIC ${postcode}`;
+  const normalise = (value: string) => value.trim().toLocaleUpperCase('en-AU').replace(/\s+/g, ' ');
+
+  const getLocalities = () => {
+    localityPromise ??= fetch('/data/vic-localities.json')
+      .then((response) => {
+        if (!response.ok) throw new Error('Location list could not be loaded.');
+        return response.json() as Promise<LocalityData>;
+      })
+      .then((data) => data.localities);
+    return localityPromise;
+  };
+
+  async function initialiseMap() {
+    if (!mapElement) return undefined;
+    const leaflet = await import('leaflet');
+    const L = leaflet.default;
+    const map = L.map(mapElement, {
+      attributionControl: true,
+      scrollWheelZoom: false,
+      zoomControl: true,
+    }).setView([-37.92, 145.05], 8);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors',
+      maxZoom: 18,
+    }).addTo(map);
+
+    const boundaryResponse = await fetch('/data/greater-melbourne.geojson');
+    if (!boundaryResponse.ok) throw new Error('Coverage boundary could not be loaded.');
+    const boundary = L.geoJSON(await boundaryResponse.json(), {
+      style: {
+        color: '#a75d18',
+        fillColor: '#d8963f',
+        fillOpacity: 0.18,
+        opacity: 0.9,
+        weight: 2,
+      },
+    }).addTo(map);
+
+    L.circleMarker([-38.147, 145.423], {
+      color: '#ffffff',
+      fillColor: '#171815',
+      fillOpacity: 1,
+      radius: 7,
+      weight: 3,
+    }).bindTooltip('Cardinia starting point', { direction: 'top' }).addTo(map);
+
+    map.fitBounds(boundary.getBounds(), { padding: [20, 20] });
+    mapLoading?.remove();
+    return { L, map, marker: undefined as ReturnType<typeof L.circleMarker> | undefined };
+  }
+
+  const loadMap = () => {
+    if (mapInstance || !mapElement) return;
+    initialiseMap()
+      .then((instance) => { mapInstance = instance; })
+      .catch((error) => {
+        console.error('Coverage map failed to initialise.', error);
+        if (mapLoading) mapLoading.textContent = 'The map is temporarily unavailable. The suburb checker still works.';
+      });
+  };
+
+  if (section && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        loadMap();
+        getLocalities().then((data) => { localities = data; }).catch(() => {});
+        observer.disconnect();
+      }
+    }, { rootMargin: '300px' });
+    observer.observe(section);
+  } else {
+    loadMap();
+  }
+
+  const closeSuggestions = () => {
+    if (!suggestions || !input) return;
+    suggestions.hidden = true;
+    suggestions.replaceChildren();
+    input.setAttribute('aria-expanded', 'false');
+    input.removeAttribute('aria-activedescendant');
+    filteredSuggestions = [];
+    activeSuggestion = -1;
+  };
+
+  const chooseLocality = (locality: LocalityTuple) => {
+    if (!input) return;
+    input.value = localityLabel(locality);
+    input.dataset.selectedLocality = `${locality[0]}|${locality[1]}`;
+    closeSuggestions();
+    showCoverage(locality);
+  };
+
+  const renderSuggestions = (matches: LocalityTuple[]) => {
+    if (!suggestions || !input) return;
+    suggestions.replaceChildren();
+    filteredSuggestions = matches;
+    activeSuggestion = -1;
+
+    matches.forEach((locality, index) => {
+      const option = document.createElement('li');
+      option.id = `suburb-option-${index}`;
+      option.role = 'option';
+      option.textContent = localityLabel(locality);
+      option.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        chooseLocality(locality);
+      });
+      suggestions.append(option);
+    });
+
+    suggestions.hidden = matches.length === 0;
+    input.setAttribute('aria-expanded', String(matches.length > 0));
+  };
+
+  const findMatches = (query: string) => {
+    const value = normalise(query).replace(/,? VIC(?:TORIA)?(?: \d{4})?$/, '');
+    if (value.length < 2) return [];
+    const postcodeQuery = /^\d/.test(value);
+    return localities
+      .filter(([suburb, postcode]) => postcodeQuery ? postcode.startsWith(value) : suburb.startsWith(value))
+      .slice(0, 7);
+  };
+
+  const showCoverage = async (locality: LocalityTuple) => {
+    if (!result) return;
+    const [suburb, postcode, latitude, longitude, inGreaterMelbourne] = locality;
+    const place = `${titleCase(suburb)} ${postcode}`;
+    result.hidden = false;
+    result.classList.toggle('is-covered', inGreaterMelbourne);
+    result.classList.toggle('is-outside', !inGreaterMelbourne);
+
+    if (inGreaterMelbourne) {
+      result.innerHTML = `<strong>Great news—we service ${place}.</strong><span>Your suburb is within our usual Greater Melbourne service area.</span><a href="/contact/?location=${encodeURIComponent(`${titleCase(suburb)} ${postcode}`)}">Request a quote <span aria-hidden="true">→</span></a>`;
+    } else {
+      result.innerHTML = `<strong>${place} is outside our usual area.</strong><span>Send us the project details anyway and we’ll let you know if we can make the travel work.</span><a href="/contact/?location=${encodeURIComponent(`${titleCase(suburb)} ${postcode}`)}">Ask about your project <span aria-hidden="true">→</span></a>`;
+    }
+
+    const instance = mapInstance ?? await initialiseMap().catch(() => undefined);
+    if (!mapInstance) mapInstance = instance;
+    if (!instance) return;
+    instance.marker?.remove();
+    instance.marker = instance.L.circleMarker([latitude, longitude], {
+      color: '#ffffff',
+      fillColor: inGreaterMelbourne ? '#a75d18' : '#9a3e32',
+      fillOpacity: 1,
+      radius: 9,
+      weight: 3,
+    }).bindTooltip(place, { direction: 'top', permanent: true }).addTo(instance.map);
+    instance.map.flyTo([latitude, longitude], inGreaterMelbourne ? 11 : 9, { animate: true, duration: 1.1 });
+  };
+
+  const checkCurrentValue = () => {
+    if (!input || !result) return;
+    const selectedKey = input.dataset.selectedLocality;
+    const entered = normalise(input.value);
+    const exact = localities.find(([suburb, postcode]) =>
+      `${suburb}|${postcode}` === selectedKey
+      || entered === suburb
+      || entered === postcode
+      || entered === normalise(localityLabel([suburb, postcode, 0, 0, false]))
+      || entered === `${suburb} ${postcode}`
+    );
+
+    if (exact) {
+      chooseLocality(exact);
+      return;
+    }
+
+    result.hidden = false;
+    result.className = 'checker-result is-unknown';
+    result.innerHTML = '<strong>We could not match that location.</strong><span>Choose a suggestion, or try a Victorian suburb name or four-digit postcode.</span>';
+  };
+
+  toggle?.addEventListener('click', async () => {
+    if (!toggle || !input) return;
+    if (!localities.length) localities = await getLocalities().catch(() => []);
+    checkCurrentValue();
+  });
+
+  input?.addEventListener('focus', async () => {
+    if (!localities.length) localities = await getLocalities().catch(() => []);
+  });
+
+  input?.addEventListener('input', async () => {
+    if (!localities.length) localities = await getLocalities().catch(() => []);
+    delete input.dataset.selectedLocality;
+    renderSuggestions(findMatches(input.value));
+  });
+
+  input?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (activeSuggestion >= 0) chooseLocality(filteredSuggestions[activeSuggestion]);
+      else checkCurrentValue();
+      return;
+    }
+    if (event.key === 'Escape') {
+      closeSuggestions();
+      return;
+    }
+    if (!filteredSuggestions.length || !suggestions) return;
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+    event.preventDefault();
+    activeSuggestion = event.key === 'ArrowDown'
+      ? (activeSuggestion + 1) % filteredSuggestions.length
+      : (activeSuggestion - 1 + filteredSuggestions.length) % filteredSuggestions.length;
+    Array.from(suggestions.children).forEach((option, index) => option.setAttribute('aria-selected', String(index === activeSuggestion)));
+    input.setAttribute('aria-activedescendant', `suburb-option-${activeSuggestion}`);
+  });
+
+  input?.addEventListener('blur', () => window.setTimeout(closeSuggestions, 140));
+</script>
+
+<style>
+  .service-area-section { overflow: hidden; padding-block: clamp(4.75rem, 9vw, 8.5rem); background: var(--paper); }
+  .service-area-grid { display: grid; align-items: center; gap: clamp(3rem, 7vw, 7rem); }
+  .service-map-shell { position: relative; min-width: 0; overflow: hidden; border: 1px solid var(--line); background: #e8e3d8; box-shadow: var(--shadow); }
+  .service-map { z-index: 0; width: 100%; min-height: 29rem; }
+  .map-loading { position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; background: var(--cream); color: var(--muted); font-size: .76rem; }
+  .map-key { position: absolute; right: .75rem; bottom: .75rem; z-index: 500; display: flex; flex-wrap: wrap; gap: .55rem 1rem; max-width: calc(100% - 1.5rem); padding: .7rem .8rem; background: rgba(250,248,242,.94); box-shadow: 0 8px 22px rgba(23,24,21,.12); color: var(--muted); font-size: .62rem; backdrop-filter: blur(8px); }
+  .map-key span { display: flex; align-items: center; gap: .4rem; }
+  .map-key i { display: block; width: .7rem; height: .7rem; border-radius: 50%; }
+  .area-swatch { border: 2px solid var(--amber-deep); background: rgba(216,150,63,.25); }
+  .base-swatch { border: 2px solid white; background: var(--ink); }
+  .area-copy .display { max-width: 13ch; font-size: clamp(2.8rem, 5.6vw, 5.2rem); }
+  .area-lead { margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.2rem); }
+  .area-support { max-width: 40rem; margin: .75rem 0 0; color: var(--muted); font-size: .86rem; }
+  .location-checker { margin-top: 1.7rem; }
+  .checker-row { display: grid; grid-template-columns: 0fr auto; align-items: end; gap: .75rem; transition: grid-template-columns .52s cubic-bezier(.2,.7,.2,1); }
+  .location-checker.is-expanded .checker-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .location-field { min-width: 0; opacity: 0; overflow: hidden; pointer-events: none; transform: translateX(-.8rem); transition: opacity .3s ease .08s, transform .45s cubic-bezier(.2,.7,.2,1), visibility .3s; visibility: hidden; }
+  .location-checker.is-expanded .location-field { opacity: 1; overflow: visible; pointer-events: auto; transform: translateX(0); visibility: visible; }
+  .location-field label { display: block; margin: 0 0 .45rem; font-family: "Archivo Variable", sans-serif; font-size: .66rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; }
+  .input-wrap { position: relative; }
+  .input-wrap > svg { position: absolute; top: 50%; left: .9rem; z-index: 1; color: var(--amber-deep); pointer-events: none; transform: translateY(-50%); }
+  .input-wrap input { width: 100%; min-height: 3.35rem; border: 1px solid var(--line); border-radius: .2rem; padding: .8rem 1rem .8rem 2.75rem; background: white; color: var(--ink); }
+  .input-wrap input:focus { border-color: var(--amber-deep); outline: 0; box-shadow: 0 0 0 3px rgba(216,150,63,.18); }
+  .suggestions { position: absolute; top: calc(100% + .35rem); right: 0; left: 0; z-index: 700; max-height: 18rem; overflow-y: auto; border: 1px solid var(--line); margin: 0; padding: .35rem; background: white; box-shadow: var(--shadow); list-style: none; }
+  .suggestions[hidden] { display: none; }
+  .suggestions li { padding: .7rem .75rem; color: var(--muted); font-size: .78rem; cursor: pointer; }
+  .suggestions li:hover, .suggestions li[aria-selected="true"] { background: var(--cream); color: var(--ink); }
+  .checker-toggle { display: inline-flex; min-height: 3.35rem; align-items: center; justify-content: center; gap: .5rem; border: 0; padding: .75rem .15rem; background: transparent; color: var(--amber-deep); font-family: "Archivo Variable", sans-serif; font-size: .72rem; font-weight: 800; letter-spacing: .075em; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: transform .52s cubic-bezier(.2,.7,.2,1), color .18s ease; }
+  .checker-toggle:hover { color: var(--ink); }
+  .checker-toggle svg { transition: transform .3s ease; }
+  .location-checker.is-expanded .checker-toggle svg { transform: translateX(.2rem); }
+  .checker-result { display: grid; gap: .25rem; border-left: 3px solid var(--amber-deep); margin-top: 1rem; padding: .9rem 1rem; background: var(--cream); animation: result-in .38s cubic-bezier(.2,.7,.2,1); }
+  .checker-result[hidden] { display: none; }
+  .checker-result.is-outside { border-left-color: #9a3e32; }
+  .checker-result strong { font-family: "Archivo Variable", sans-serif; font-size: .85rem; }
+  .checker-result span { color: var(--muted); font-size: .75rem; }
+  .checker-result a { margin-top: .4rem; color: var(--amber-deep); font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .area-note { display: flex; align-items: flex-start; gap: .55rem; max-width: 40rem; margin: 1.25rem 0 0; color: var(--muted); font-size: .69rem; }
+  .area-note svg { flex: 0 0 auto; margin-top: .15rem; color: var(--amber-deep); }
+  :global(.leaflet-container) { background: #e8e3d8; font-family: "Manrope Variable", sans-serif; }
+  :global(.leaflet-control-zoom a) { color: var(--ink); }
+  :global(.leaflet-tooltip) { border: 0; border-radius: .15rem; padding: .45rem .6rem; background: var(--ink); box-shadow: none; color: white; font-size: .66rem; }
+  :global(.leaflet-tooltip-top::before) { border-top-color: var(--ink); }
+  :global(.leaflet-control-attribution) { max-width: 80%; font-size: 8px; }
+  @keyframes result-in { from { opacity: 0; transform: translateY(.5rem); } }
+  @media (min-width: 64rem) { .service-area-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 39rem) {
+    .service-map { min-height: 23rem; }
+    .checker-row, .location-checker.is-expanded .checker-row { grid-template-columns: 1fr; }
+    .location-field { max-height: 0; }
+    .location-checker.is-expanded .location-field { max-height: 8rem; }
+    .checker-toggle { justify-self: start; }
+    .location-checker.is-expanded .checker-toggle { justify-self: end; }
+  }
+</style>
