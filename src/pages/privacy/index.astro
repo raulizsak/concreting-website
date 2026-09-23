@@ -1,52 +1,157 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
+import { siteConfig } from '../../config/site';
 ---
 
 <BaseLayout
-  title="Privacy Policy Placeholder | Your Business Name"
-  description="Placeholder privacy information for the website mockup. This wording requires legal review and the business's real details before launch."
+  title="Privacy Policy | Geli Construction Services"
+  description="Privacy information for the Geli Construction Services website and quote enquiry form."
   noindex={true}
 >
   <PageHero
     eyebrow="Privacy"
-    title="Privacy policy placeholder"
-    intro="This mockup collects quote-request information through a Netlify form. The policy below is a drafting placeholder and is not legal advice."
-    demoNote="Replace and review this page with the business's correct legal name, contact details and final data-handling practices before public launch."
+    title="Privacy Policy"
+    intro="This policy explains how Geli Construction Services handles personal information provided through this website and through enquiries about our services."
+    compact
   />
 
   <section class="section privacy-content">
     <div class="container privacy-grid">
-      <aside>
-        <p>Document status</p>
-        <strong>Placeholder · Requires review</strong>
+      <aside data-reveal>
+        <p>Last updated</p>
+        <strong>23 September 2026</strong>
+        <nav aria-label="Privacy policy contents">
+          <a href="#information">Information we may collect</a>
+          <a href="#collection">How we collect information</a>
+          <a href="#use">Why we collect and use information</a>
+          <a href="#disclosure">Disclosure of information</a>
+          <a href="#providers">Website hosting and service providers</a>
+          <a href="#cookies">Cookies and external services</a>
+          <a href="#contact">Contact</a>
+        </nav>
       </aside>
-      <div class="legal-copy">
-        <p class="warning"><strong>Important:</strong> This is sample wording for the design mockup only. It must be reviewed and replaced with a policy appropriate to the real business and applicable Australian privacy obligations.</p>
 
-        <h2>Information this website may collect</h2>
-        <p>When someone submits the quote form, the website may collect their name, phone number, email address, suburb or postcode, requested service and the project details they choose to provide.</p>
+      <article class="legal-copy" data-reveal>
+        <h2 class="document-title">Privacy Policy</h2>
+        <p><strong>Last updated: 23 September 2026</strong></p>
+        <p><strong>Geli Construction Services<br />ABN {siteConfig.abn}</strong></p>
 
-        <h2>Why the information is collected</h2>
-        <p>The intended purpose is to respond to enquiries, discuss requested work and provide information about a possible quote. The final policy should describe the business's actual practices accurately.</p>
+        <p>Geli Construction Services respects the privacy of people who contact us or use this website. This Privacy Policy explains the types of personal information we may collect, why we collect it, how it may be used or disclosed, and how you can contact us about your information.</p>
+        <p>We handle personal information in accordance with applicable Australian privacy requirements. Where the Privacy Act 1988 (Cth) and the Australian Privacy Principles apply to our activities, we will handle personal information consistently with those requirements.</p>
 
-        <h2>How form submissions are handled</h2>
-        <p>The current technical design uses Netlify Forms. Netlify may process and store form submissions on behalf of the website owner. The business should confirm retention, access and deletion practices before launch.</p>
+        <section id="information">
+          <h2>1. Information we may collect</h2>
+          <p>When you contact Geli Construction Services or submit a quote request, we may collect information such as:</p>
+          <ul>
+            <li>your name;</li>
+            <li>your phone number;</li>
+            <li>your email address;</li>
+            <li>your suburb or postcode;</li>
+            <li>the service you are interested in;</li>
+            <li>information you provide about your project; and</li>
+            <li>any other information you choose to provide when communicating with us.</li>
+          </ul>
+          <p>We may also receive limited technical information associated with the operation and security of the website through our hosting and website service providers.</p>
+          <p>Please do not provide sensitive personal information through the website unless it is genuinely necessary for your enquiry.</p>
+        </section>
 
-        <h2>Sharing and disclosure</h2>
-        <p>Insert the business's genuine policy about when information may be shared with service providers, professional advisers or authorities. Do not rely on this placeholder.</p>
+        <section id="collection">
+          <h2>2. How we collect information</h2>
+          <p>We generally collect personal information directly from you when you:</p>
+          <ul>
+            <li>submit a quote or contact form on this website;</li>
+            <li>contact us by phone or email; or</li>
+            <li>otherwise communicate with us about our services.</li>
+          </ul>
+          <p>The website's quote form is currently processed using Netlify's website hosting and form services.</p>
+        </section>
 
-        <h2>Access, correction and deletion</h2>
-        <p>Insert instructions for contacting the business to request access to, correction of or deletion of personal information, as appropriate.</p>
+        <section id="use">
+          <h2>3. Why we collect and use information</h2>
+          <p>We may collect and use personal information to:</p>
+          <ul>
+            <li>respond to enquiries and quote requests;</li>
+            <li>discuss requested construction or outdoor work;</li>
+            <li>communicate with you about a project;</li>
+            <li>administer and maintain records relating to enquiries and services;</li>
+            <li>operate, maintain and protect the website;</li>
+            <li>deal with complaints or questions; and</li>
+            <li>comply with applicable legal obligations.</li>
+          </ul>
+          <p>We will not use personal information for an unrelated purpose where we are not permitted to do so.</p>
+        </section>
 
-        <h2>Cookies and analytics</h2>
-        <p>No analytics or advertising tracking has been added to this mockup. If analytics or other third-party tools are added later, update this policy and consent practices as required.</p>
+        <section id="disclosure">
+          <h2>4. Disclosure of information</h2>
+          <p>We may disclose personal information where reasonably necessary to:</p>
+          <ul>
+            <li>service providers that help us operate the website, communications or business systems;</li>
+            <li>professional advisers or contractors where relevant to the business;</li>
+            <li>government agencies, regulators, courts or other parties where disclosure is required or authorised by law; or</li>
+            <li>another party where you have authorised us to do so.</li>
+          </ul>
+          <p>We do not sell personal information.</p>
+        </section>
 
-        <h2>Contact</h2>
-        <p>Privacy enquiries: <strong>hello@[DOMAIN PLACEHOLDER]</strong>. Replace this with a monitored business contact before launch.</p>
+        <section id="providers">
+          <h2>5. Website hosting and service providers</h2>
+          <p>This website is hosted using Netlify. Information submitted through the website may be processed or stored by Netlify and other technology providers used to operate the website.</p>
+          <p>Some technology providers may process or store information outside Australia. The locations used by those providers can change over time and are governed by their own infrastructure and privacy arrangements.</p>
+          <p>Where Australian privacy law imposes obligations relating to the use of overseas service providers, we will take the steps required by that law.</p>
+        </section>
 
-        <p class="updated">Placeholder last reviewed: August 2026.</p>
-      </div>
+        <section id="cookies">
+          <h2>6. Cookies, analytics and external services</h2>
+          <p>At the date of this policy, this website does not intentionally use advertising tracking or behavioural advertising cookies.</p>
+          <p>The website may use technical functionality that is necessary to operate its features. For example, the service-area map uses third-party map services and your browser may communicate with those services when the map is loaded.</p>
+          <p>If analytics, advertising technology or other tracking tools are added in the future, this policy and any consent mechanisms will be reviewed and updated where required.</p>
+        </section>
+
+        <section>
+          <h2>7. Security</h2>
+          <p>We take reasonable steps appropriate to the circumstances to protect personal information from misuse, interference, loss, unauthorised access, modification or disclosure.</p>
+          <p>However, no method of transmitting or storing information online can be guaranteed to be completely secure.</p>
+        </section>
+
+        <section>
+          <h2>8. Retention</h2>
+          <p>We keep personal information for as long as reasonably required for the purposes for which it was collected, for legitimate business and record-keeping needs, or as required by applicable law.</p>
+          <p>Information that is no longer required may be deleted, destroyed or de-identified where appropriate.</p>
+        </section>
+
+        <section>
+          <h2>9. Access and correction</h2>
+          <p>You may contact us if you would like to request access to personal information we hold about you or ask us to correct information that you believe is inaccurate or out of date.</p>
+          <p>Applicable law may permit or require us to refuse a request in some circumstances. If that occurs, we will handle the request in accordance with any obligations that apply to us.</p>
+        </section>
+
+        <section>
+          <h2>10. Privacy questions and complaints</h2>
+          <p>If you have a question, concern or complaint about how Geli Construction Services has handled your personal information, please contact us using the details below.</p>
+          <p>We will review the matter and respond as appropriate.</p>
+          <p>Where the Privacy Act applies and you are not satisfied with how a privacy complaint has been handled, you may also have the right to contact the Office of the Australian Information Commissioner (OAIC).</p>
+        </section>
+
+        <section>
+          <h2>11. Third-party websites</h2>
+          <p>This website may contain links to third-party websites or services.</p>
+          <p>Geli Construction Services is not responsible for the privacy practices of third-party websites. You should review the relevant privacy information provided by those services.</p>
+        </section>
+
+        <section>
+          <h2>12. Changes to this policy</h2>
+          <p>We may update this Privacy Policy from time to time to reflect changes to the website, our business practices, service providers or legal requirements.</p>
+          <p>The current version will be published on this page with the date it was last updated.</p>
+        </section>
+
+        <section id="contact">
+          <h2>13. Contact</h2>
+          <p><strong>Geli Construction Services<br />ABN {siteConfig.abn}</strong></p>
+          <p>Email:<br /><a href={siteConfig.emailHref}>{siteConfig.emailDisplay}</a></p>
+          <p>Phone:<br /><a href={siteConfig.phoneHref}>{siteConfig.phoneDisplay}</a></p>
+        </section>
+      </article>
     </div>
   </section>
 </BaseLayout>
@@ -54,13 +159,19 @@ import PageHero from '../../components/PageHero.astro';
 <style>
   .privacy-content { background: var(--paper); }
   .privacy-grid { display: grid; gap: 2.5rem; }
-  .privacy-grid aside { align-self: start; border-top: 3px solid var(--amber); padding-top: 1rem; }
-  .privacy-grid aside p { margin: 0; color: var(--muted); font-size: .65rem; font-weight: 760; letter-spacing: .09em; text-transform: uppercase; }
-  .privacy-grid aside strong { display: block; margin-top: .4rem; font-family: "Archivo Variable", sans-serif; font-size: 1rem; }
-  .legal-copy { max-width: 48rem; }
-  .warning { border: 1px solid rgba(169,97,30,.3); padding: 1rem; background: rgba(216,150,63,.08); }
-  .legal-copy h2 { margin: 2.5rem 0 .7rem; font-family: "Archivo Variable", sans-serif; font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.03em; }
-  .legal-copy p { color: var(--muted); }
-  .updated { margin-top: 3rem; font-size: .72rem; }
-  @media (min-width: 64rem) { .privacy-grid { grid-template-columns: .5fr 1.5fr; } .privacy-grid aside { position: sticky; top: 2rem; } }
+  .privacy-grid aside { align-self: start; border-top: 3px solid var(--brand-primary); padding-top: 1rem; }
+  .privacy-grid aside > p { margin: 0; color: var(--muted); font-size: .65rem; font-weight: 760; letter-spacing: .09em; text-transform: uppercase; }
+  .privacy-grid aside > strong { display: block; margin-top: .4rem; font-family: "Archivo Variable", sans-serif; font-size: 1rem; }
+  .privacy-grid aside nav { display: none; gap: .55rem; border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: 1.2rem; }
+  .privacy-grid aside nav a { color: var(--muted); font-size: .7rem; }
+  .privacy-grid aside nav a:hover { color: var(--brand-primary-strong); }
+  .legal-copy { max-width: 50rem; }
+  .document-title { margin: 0 0 1.5rem !important; font-size: clamp(2.4rem, 5vw, 4.2rem) !important; text-transform: uppercase; }
+  .legal-copy section { scroll-margin-top: 2rem; }
+  .legal-copy h2 { margin: 2.75rem 0 .75rem; font-family: "Archivo Variable", sans-serif; font-size: clamp(1.45rem, 3vw, 2rem); font-weight: 700; letter-spacing: -.03em; }
+  .legal-copy p, .legal-copy li { color: var(--muted); }
+  .legal-copy ul { padding-left: 1.3rem; }
+  .legal-copy li { margin-bottom: .4rem; }
+  .legal-copy a { color: var(--brand-primary-strong); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
+  @media (min-width: 64rem) { .privacy-grid { grid-template-columns: .48fr 1.52fr; } .privacy-grid aside { position: sticky; top: 2rem; } .privacy-grid aside nav { display: grid; } }
 </style>

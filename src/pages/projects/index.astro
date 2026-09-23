@@ -5,44 +5,48 @@ import PageHero from '../../components/PageHero.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import SectionCta from '../../components/SectionCta.astro';
 
-const projects = (await getCollection('projects'))
-  .sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
-const filters = ['All', 'Concreting', 'Fencing', 'Outdoor Works'];
+const projects = (await getCollection('projects')).sort((a, b) => b.data.order - a.data.order);
+const filters = ['All', 'Concreting', 'Excavation', 'Stonework & Outdoor Tiling', 'Outdoor Finishing & Landscaping', 'Irrigation & Drainage', 'Retaining Walls'];
 ---
 
 <BaseLayout
-  title="Our Projects | Your Business Name"
-  description="Browse a demonstration project gallery for concreting, fencing and outdoor construction work. All current projects are clearly marked samples."
+  title="Projects | Geli Construction Services"
+  description="View genuine concreting projects completed by Geli Construction Services, including driveway, slab, backyard and side access work."
 >
   <PageHero
-    eyebrow="Project gallery"
-    title="Our projects"
-    intro="A visual, file-based project gallery designed to make genuine completed work easy to browse—and simple to add later."
-    demoNote="Every project currently shown is generated sample content, not completed client work."
+    eyebrow="Projects"
+    title="Completed work"
+    intro="Explore genuine project photography from concrete work completed across driveways, backyard areas, side access and outdoor slabs."
   />
 
   <section class="section projects-page">
     <div class="container">
-      <div class="filter-bar" role="group" aria-label="Filter projects by service">
+      <div class="filter-bar" role="group" aria-label="Filter projects by service" data-reveal>
         {filters.map((filter, index) => (
           <button type="button" data-filter={filter} aria-pressed={index === 0 ? 'true' : 'false'}>{filter}</button>
         ))}
       </div>
-      <p class="filter-status" aria-live="polite">Showing all {projects.length} sample projects.</p>
+      <p class="filter-status" aria-live="polite">Showing all {projects.length} projects.</p>
       <div class="project-grid" data-project-grid>
         {projects.map((project, index) => <ProjectCard project={project} priority={index < 2} />)}
+      </div>
+      <div class="empty-state" data-empty-state hidden>
+        <p class="eyebrow">More work to come</p>
+        <h2>Projects coming soon</h2>
+        <p>We're adding completed work to this category. Check back soon for more project photos.</p>
       </div>
       <noscript><p class="noscript-note">Project filtering needs JavaScript. All projects remain visible without it.</p></noscript>
     </div>
   </section>
 
-  <SectionCta title="Have a similar project?" copy="Tell us what you are planning and request a free, no-obligation quote." />
+  <SectionCta title="Have a project in mind?" copy="Tell us what you are planning and request a free quote." />
 </BaseLayout>
 
 <script>
   const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
   const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-category]'));
   const status = document.querySelector<HTMLElement>('.filter-status');
+  const emptyState = document.querySelector<HTMLElement>('[data-empty-state]');
 
   filterButtons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -54,7 +58,10 @@ const filters = ['All', 'Concreting', 'Fencing', 'Outdoor Works'];
         card.hidden = !matches;
         if (matches) visible += 1;
       });
-      if (status) status.textContent = `Showing ${visible} ${filter === 'All' ? 'sample projects' : `${filter.toLowerCase()} sample projects`}.`;
+      if (emptyState) emptyState.hidden = visible !== 0;
+      if (status) status.textContent = visible === 0
+        ? `No projects are published in ${filter} yet.`
+        : `Showing ${visible} ${filter === 'All' ? 'projects' : `${filter.toLowerCase()} projects`}.`;
     });
   });
 </script>
@@ -62,10 +69,16 @@ const filters = ['All', 'Concreting', 'Fencing', 'Outdoor Works'];
 <style>
   .projects-page { background: var(--paper); }
   .filter-bar { display: flex; overflow-x: auto; gap: .5rem; padding-bottom: .5rem; scrollbar-width: thin; }
-  .filter-bar button { flex: 0 0 auto; min-height: 2.8rem; border: 1px solid var(--line); border-radius: 999px; padding: .65rem 1rem; background: transparent; color: var(--muted); font-family: "Archivo Variable", sans-serif; font-size: .7rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; }
-  .filter-bar button[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: white; }
+  .filter-bar button { flex: 0 0 auto; min-height: 2.8rem; border: 1px solid var(--line); border-radius: 999px; padding: .65rem 1rem; background: transparent; color: var(--muted); font-family: "Archivo Variable", sans-serif; font-size: .68rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease; }
+  .filter-bar button:hover { border-color: var(--brand-primary-strong); color: var(--brand-dark); transform: translateY(-1px); }
+  .filter-bar button[aria-pressed="true"] { border-color: var(--brand-dark); background: var(--brand-dark); color: white; }
   .filter-status { margin: 1rem 0 3rem; color: var(--muted); font-size: .75rem; }
   .project-grid { display: grid; gap: clamp(2.5rem, 5vw, 5rem) 1.5rem; }
+  .empty-state { border: 1px solid var(--line); padding: clamp(2rem, 6vw, 5rem); background: var(--brand-light); text-align: center; }
+  .empty-state[hidden] { display: none; }
+  .empty-state h2 { margin: 0; font-family: "Archivo Variable", sans-serif; font-size: clamp(2rem, 5vw, 4rem); text-transform: uppercase; }
+  .empty-state > p:last-child { max-width: 34rem; margin: 1rem auto 0; color: var(--muted); }
   .noscript-note { margin-top: 2rem; color: var(--muted); font-size: .75rem; }
   @media (min-width: 48rem) { .project-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (prefers-reduced-motion: reduce) { .filter-bar button { transition: none; } }
 </style>

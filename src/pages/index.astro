@@ -1,5 +1,5 @@
 ---
-import { ArrowDown, ArrowRight, ArrowUpRight, Check, Phone, Quote } from '@lucide/astro';
+import { ArrowDown, ArrowRight, ArrowUpRight, BrickWall, Droplets, Layers, PanelsTopLeft, Phone, Shovel, Sprout } from '@lucide/astro';
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
@@ -10,21 +10,37 @@ import { siteConfig } from '../config/site';
 
 const projects = (await getCollection('projects'))
   .filter((project) => project.data.featured)
-  .sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
-
-const serviceImages = ['/images/demo/driveway', '/images/demo/fence-charcoal', '/images/demo/backyard'];
-const values = ['Quality workmanship', 'Clear communication', 'Reliable service', 'Free quotes'];
+  .sort((a, b) => b.data.order - a.data.order);
+const serviceIcons = [Layers, Shovel, PanelsTopLeft, Sprout, Droplets, BrickWall];
+const reasons = [
+  {
+    title: 'Multiple outdoor services',
+    copy: 'Concrete, stonework, excavation, retaining walls, drainage and outdoor finishing can be discussed as part of the same project.',
+  },
+  {
+    title: 'Concrete finish options',
+    copy: 'Choose from plain concrete, coloured concrete and exposed aggregate depending on the job and the finish you want.',
+  },
+  {
+    title: 'Broad service area',
+    copy: 'Servicing selected suburbs across South-East Melbourne, the Dandenong Ranges, Gippsland, Bass Coast, South Gippsland and the Latrobe Valley.',
+  },
+  {
+    title: 'Straightforward quote requests',
+    copy: 'Tell us what you need, where the project is and a few details about the job so we can discuss the scope and next steps.',
+  },
+];
 ---
 
 <BaseLayout
-  title="Concreting, Fencing & Outdoor Works | Your Business Name"
-  description="Quality outdoor work built for Australian homes. Request a free quote for concreting, fencing and outdoor works."
+  title="Geli Construction Services | Concreting & Outdoor Construction"
+  description="Concreting, excavation, stonework, retaining walls, drainage and outdoor finishing across South-East Melbourne, Gippsland and surrounding service areas."
 >
   <section class="hero">
     <ResponsiveImage
       class="hero-picture"
-      src="/images/demo/hero"
-      alt="Generated demo image of a tradesperson inspecting an exposed aggregate driveway at an Australian home"
+      src="/images/hero/hero"
+      alt=""
       variant="hero"
       loading="eager"
       fetchpriority="high"
@@ -33,192 +49,156 @@ const values = ['Quality workmanship', 'Clear communication', 'Reliable service'
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="hero-inner container">
       <div class="hero-copy">
-        <p class="hero-kicker"><span>Residential outdoor construction</span><span>Demo website</span></p>
-        <h1 class="display">Concreting,<br />fencing <em>&amp;</em><br />outdoor works</h1>
-        <p class="hero-lead">{siteConfig.tagline}</p>
+        <p class="hero-kicker">Concreting <span>•</span> Stonework <span>•</span> Outdoor construction</p>
+        <h1 class="display">Concreting <em>&amp;</em><br />outdoor construction</h1>
+        <p class="hero-lead">Driveways, footpaths, alfresco areas, steps, stonework, retaining walls, excavation, drainage and outdoor finishing across South-East Melbourne, the Dandenong Ranges, Gippsland and surrounding areas.</p>
         <div class="hero-actions">
-          <a class="button" href="/contact/">Get a free quote <ArrowRight size={18} aria-hidden="true" /></a>
-          <a class="button button--outline" href={siteConfig.phoneHref}><Phone size={17} aria-hidden="true" /> Call now</a>
+          <a class="button" href="/contact/">Get a free quote <ArrowUpRight size={18} aria-hidden="true" /></a>
+          <a class="button button--outline" href={siteConfig.phoneHref}><Phone size={17} aria-hidden="true" /> Call {siteConfig.phoneDisplay}</a>
         </div>
       </div>
-      <a class="scroll-cue" href="#introduction">
-        <span>Explore our work</span>
-        <ArrowDown size={18} aria-hidden="true" />
-      </a>
-      <p class="hero-note">Original demo imagery · Not client project photography</p>
+      <a class="hero-scroll" href="#introduction"><ArrowDown size={18} aria-hidden="true" /> Explore our work</a>
     </div>
   </section>
 
   <section class="section introduction" id="introduction">
-    <div class="container intro-grid">
-      <p class="eyebrow">Built around your home</p>
+    <div class="container intro-grid" data-reveal>
+      <p class="eyebrow">Built for practical outdoor spaces</p>
       <div>
-        <h2 class="display">Practical outdoor work.<br /><span>Finished with care.</span></h2>
+        <h2 class="display">From groundwork to the finished surface.</h2>
         <div class="intro-copy">
-          <p>We help homeowners complete the spaces around their homes with considered concreting, fencing and general outdoor construction solutions.</p>
-          <p class="demo-note">This introduction is demo copy and will be refined once the client's confirmed services and approach are supplied.</p>
+          <p>Geli Construction Services provides concreting and outdoor construction services for homes and outdoor spaces, from driveways and footpaths through to stonework, retaining walls, excavation, drainage and finishing touches.</p>
+          <p>Whether you're planning a new driveway, footpath, alfresco area or a broader outdoor upgrade, tell us what you're working on and we can discuss the right approach for your site.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section services-home">
+  <section class="section services-section">
     <div class="container">
-      <div class="section-heading">
+      <div class="section-heading" data-reveal>
         <div>
-          <p class="eyebrow">What we can show</p>
-          <h2 class="display">Outdoor work,<br />covered.</h2>
+          <p class="eyebrow">What we do</p>
+          <h2 class="display">Outdoor construction, connected.</h2>
         </div>
-        <p>The service list below is presentation content only. It is centralised and ready to refine when the client confirms the exact offering.</p>
+        <a class="text-link" href="/services/">Explore all services <ArrowRight size={18} aria-hidden="true" /></a>
       </div>
-
-      <div class="service-grid">
-        {siteConfig.services.map((service, index) => (
-          <article class="service-card">
-            <a class="service-image" href="/services/">
-              <ResponsiveImage src={serviceImages[index]} alt={`Generated demo image representing ${service.name.toLowerCase()} work`} sizes="(min-width: 1024px) 33vw, 100vw" />
-              <span>0{index + 1}</span>
-            </a>
-            <div class="service-body">
-              <h3>{service.name}</h3>
-              <p>{service.summary}</p>
-              <ul>
-                {service.examples.slice(0, 3).map((example) => <li>{example}</li>)}
-              </ul>
-              <a href="/services/">Explore service <ArrowUpRight size={18} aria-hidden="true" /></a>
-            </div>
-          </article>
-        ))}
+      <div class="services-grid">
+        {siteConfig.services.map((service, index) => {
+          const Icon = serviceIcons[index];
+          return (
+            <article class="service-card" data-reveal style={`--stagger: ${index * 55}ms`}>
+              <div class="service-visual" aria-hidden="true">
+                <span>0{index + 1}</span><Icon size={30} stroke-width={1.45} />
+              </div>
+              <div class="service-card-copy">
+                <h3>{service.name}</h3>
+                <p>{service.summary}</p>
+                <a href={`/services/#${service.slug}`} aria-label={`Learn about ${service.name}`}>View service <ArrowUpRight size={17} aria-hidden="true" /></a>
+              </div>
+            </article>
+          );
+        })}
       </div>
     </div>
   </section>
 
-  <section class="section projects-home">
+  <section class="section projects-section">
     <div class="container">
-      <div class="section-heading section-heading--projects">
-        <div>
-          <p class="eyebrow">Selected demo work</p>
-          <h2 class="display">Recent projects</h2>
-        </div>
+      <div class="section-heading" data-reveal>
+        <div><p class="eyebrow">Recent work</p><h2 class="display">Concrete projects</h2></div>
         <a class="text-link" href="/projects/">View all projects <ArrowRight size={18} aria-hidden="true" /></a>
       </div>
-      <p class="project-disclaimer">All photography and project details in this section are generated sample content for the client presentation—not completed work by this business.</p>
-      <div class="project-grid">
-        {projects.slice(0, 6).map((project, index) => <ProjectCard project={project} priority={index < 2} />)}
-      </div>
+      <div class="project-grid">{projects.map((project, index) => <ProjectCard project={project} priority={index === 0} />)}</div>
     </div>
   </section>
 
-  <section class="section values-section">
-    <div class="container values-grid">
-      <div class="values-intro">
-        <p class="eyebrow">Why choose us</p>
-        <h2 class="display">A better experience,<br />from quote to finish.</h2>
-        <p>These are editable demo value propositions. They should be reviewed with the client before any public launch.</p>
+  <section class="section reasons-section">
+    <div class="container reasons-layout">
+      <div class="reasons-heading" data-reveal>
+        <p class="eyebrow">Why choose Geli Construction Services</p>
+        <h2 class="display">One team for the work around your property.</h2>
       </div>
-      <div class="value-list">
-        {values.map((value, index) => (
-          <div class="value-row">
+      <div class="reasons-list">
+        {reasons.map((reason, index) => (
+          <article data-reveal style={`--stagger: ${index * 55}ms`}>
             <span>0{index + 1}</span>
-            <h3>{value}</h3>
-            <Check size={22} stroke-width={1.8} aria-hidden="true" />
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section testimonials-section">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Future customer stories</p>
-          <h2 class="display">Reviews that build trust.</h2>
-        </div>
-        <p>This section is ready for genuine, approved reviews. The current cards are deliberately labelled as placeholders.</p>
-      </div>
-      <div class="testimonial-grid">
-        {['Customer feedback about the finished work can sit here once a genuine review is supplied.', 'Use this space for a real customer comment about communication, reliability or the project result.', 'A third approved testimonial can be added here without changing the page design.'].map((quote) => (
-          <article class="testimonial-card">
-            <Quote size={30} stroke-width={1.5} aria-hidden="true" />
-            <p class="sample-label">Sample testimonial</p>
-            <blockquote>“{quote}”</blockquote>
-            <p class="sample-person">Customer name · [Suburb]</p>
+            <div><h3>{reason.title}</h3><p>{reason.copy}</p></div>
           </article>
         ))}
       </div>
+    </div>
+  </section>
+
+  <section class="feedback-section">
+    <div class="container feedback-card" data-reveal>
+      <p class="eyebrow">Customer feedback</p>
+      <h2 class="display">Reviews coming soon.</h2>
+      <p>We're preparing this section for genuine customer feedback. Check back soon.</p>
     </div>
   </section>
 
   <ServiceAreaChecker />
-
   <SectionCta />
 </BaseLayout>
 
 <style>
-  .hero { position: relative; min-height: max(47rem, 100svh); overflow: hidden; background: #24251f; color: white; }
-  :global(.hero-picture) { position: absolute; inset: 0; }
-  :global(.hero-picture img) { width: 100%; height: 100%; object-fit: cover; object-position: 59% center; }
-  .hero-backdrop { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(15,16,14,.98) 0%, rgba(15,16,14,.84) 38%, rgba(15,16,14,.26) 74%, rgba(15,16,14,.18) 100%), linear-gradient(0deg, rgba(15,16,14,.52), transparent 44%); }
-  .hero-grid { position: absolute; inset: 0; opacity: .18; background-image: linear-gradient(rgba(255,255,255,.11) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.11) 1px, transparent 1px); background-size: 5rem 5rem; mask-image: linear-gradient(to right, transparent 20%, black); }
-  .hero-inner { position: relative; display: grid; min-height: max(47rem, 100svh); align-content: center; padding-top: 8rem; padding-bottom: 7rem; }
-  .hero-copy { position: relative; z-index: 1; width: 100%; min-width: 0; max-width: 60rem; }
-  .hero-kicker { display: flex; flex-wrap: wrap; gap: .6rem 1.5rem; margin: 0 0 1.5rem; color: rgba(255,255,255,.7); font-family: "Archivo Variable", sans-serif; font-size: .67rem; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; }
-  .hero-kicker span + span { color: var(--amber); }
-  .hero .display { max-width: 12ch; overflow-wrap: break-word; font-size: clamp(2.55rem, 9vw, 8rem); }
-  .hero .display em { color: var(--amber); font-style: normal; }
-  .hero-lead { max-width: 35rem; margin: 1.5rem 0 0; color: rgba(255,255,255,.78); font-size: clamp(1rem, 2vw, 1.3rem); }
+  .hero { position: relative; min-height: min(58rem, 100svh); overflow: hidden; background: var(--brand-dark); color: white; }
+  :global(.hero-picture), :global(.hero-picture img) { position: absolute; inset: 0; width: 100%; height: 100%; }
+  :global(.hero-picture img) { object-fit: cover; object-position: 58% center; }
+  .hero-backdrop { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,11,10,.9) 0%, rgba(12,11,10,.72) 46%, rgba(12,11,10,.18) 78%), linear-gradient(0deg, rgba(12,11,10,.6), transparent 45%); }
+  .hero-grid { position: absolute; inset: 0 60% 0 0; border-right: 1px solid rgba(255,255,255,.14); background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 5rem 5rem; opacity: .35; }
+  .hero-inner { position: relative; z-index: 1; display: flex; min-height: min(58rem, 100svh); flex-direction: column; justify-content: center; padding-top: 7rem; padding-bottom: 3rem; }
+  .hero-copy { max-width: 59rem; animation: hero-copy-in .65s cubic-bezier(.2,.7,.2,1) both .08s; }
+  .hero-kicker { margin: 0 0 1.25rem; color: var(--brand-primary); font-family: "Archivo Variable", sans-serif; font-size: clamp(.62rem, 1.5vw, .76rem); font-weight: 720; letter-spacing: .12em; text-transform: uppercase; }
+  .hero-kicker span { padding-inline: .25rem; }
+  .hero .display { max-width: 12ch; font-size: clamp(3.25rem, 8.4vw, 8.2rem); }
+  .hero .display em { color: var(--brand-primary); font-style: normal; }
+  .hero-lead { max-width: 49rem; margin: 1.5rem 0 0; color: rgba(255,255,255,.76); font-size: clamp(1rem, 2vw, 1.2rem); }
   .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
-  .scroll-cue { position: absolute; bottom: 2rem; left: 0; display: none; align-items: center; gap: .8rem; color: rgba(255,255,255,.68); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
-  .hero-note { position: absolute; right: 0; bottom: 2rem; margin: 0; color: rgba(255,255,255,.52); font-size: .67rem; letter-spacing: .04em; }
+  .hero-scroll { position: absolute; bottom: 2rem; display: none; align-items: center; gap: .55rem; color: rgba(255,255,255,.7); font-size: .68rem; font-weight: 720; letter-spacing: .08em; text-transform: uppercase; }
   .introduction { background: var(--paper); }
-  .intro-grid { display: grid; gap: 2rem; }
-  .introduction .display { max-width: 16ch; font-size: clamp(2.7rem, 7vw, 5.6rem); }
-  .introduction .display span { color: #8a897f; }
-  .intro-copy { display: grid; gap: 1.25rem; max-width: 45rem; margin-top: 2rem; }
-  .intro-copy p { margin: 0; font-size: clamp(1rem, 1.8vw, 1.25rem); }
-  .intro-copy .demo-note { border-left: 2px solid var(--amber); padding-left: 1rem; color: var(--muted); font-size: .82rem; }
-  .section-heading { display: grid; gap: 1.5rem; align-items: end; margin-bottom: clamp(2.5rem, 5vw, 4.5rem); }
-  .section-heading .display { max-width: 13ch; font-size: clamp(2.8rem, 6vw, 5.5rem); }
-  .section-heading > p { max-width: 35rem; margin: 0; color: var(--muted); }
-  .services-home { background: var(--cream); }
-  .service-grid { display: grid; gap: 2rem; }
-  .service-card { overflow: hidden; background: var(--paper); box-shadow: 0 15px 40px rgba(30,29,24,.06); }
-  .service-image { position: relative; display: block; overflow: hidden; aspect-ratio: 4 / 3; }
-  .service-image :global(picture), .service-image :global(img) { width: 100%; height: 100%; }
-  .service-image :global(img) { object-fit: cover; transition: transform .55s cubic-bezier(.2,.7,.2,1); }
-  .service-card:hover .service-image :global(img) { transform: scale(1.035); }
-  .service-image > span { position: absolute; right: 1rem; bottom: 1rem; display: grid; width: 3rem; height: 3rem; place-items: center; background: var(--amber); color: var(--ink); font-family: "Archivo Variable", sans-serif; font-size: .75rem; font-weight: 800; }
-  .service-body { padding: 1.5rem; }
-  .service-body h3 { margin: 0; font-family: "Archivo Variable", sans-serif; font-size: clamp(1.7rem, 3.2vw, 2.5rem); font-weight: 720; letter-spacing: -.04em; text-transform: uppercase; }
-  .service-body > p { min-height: 4.5rem; margin: .8rem 0 1.25rem; color: var(--muted); font-size: .88rem; }
-  .service-body ul { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0 0 1.4rem; padding: 0; list-style: none; }
-  .service-body li { border: 1px solid var(--line); border-radius: 999px; padding: .38rem .6rem; color: var(--muted); font-size: .66rem; }
-  .service-body a, .text-link { display: inline-flex; align-items: center; gap: .45rem; color: var(--amber-deep); font-size: .72rem; font-weight: 800; letter-spacing: .075em; text-transform: uppercase; }
-  .projects-home { background: var(--paper); }
-  .section-heading--projects { margin-bottom: 1rem; }
-  .project-disclaimer { max-width: 55rem; border-left: 2px solid var(--amber); margin: 0 0 3rem; padding-left: 1rem; color: var(--muted); font-size: .76rem; }
-  .project-grid { display: grid; gap: clamp(2.5rem, 5vw, 5rem) 1.5rem; }
-  .values-section { background: var(--ink); color: white; }
-  .values-grid { display: grid; gap: 3rem; }
-  .values-intro .eyebrow { color: var(--amber); }
-  .values-intro .display { max-width: 14ch; font-size: clamp(2.8rem, 6vw, 5.5rem); }
-  .values-intro > p:last-child { max-width: 35rem; margin: 1.5rem 0 0; color: rgba(255,255,255,.58); }
-  .value-list { border-top: 1px solid rgba(255,255,255,.18); }
-  .value-row { display: grid; grid-template-columns: 2.4rem 1fr auto; align-items: center; gap: .75rem; border-bottom: 1px solid rgba(255,255,255,.18); padding-block: 1.25rem; }
-  .value-row span { color: var(--amber); font-family: "Archivo Variable", sans-serif; font-size: .68rem; font-weight: 740; }
-  .value-row h3 { margin: 0; font-family: "Archivo Variable", sans-serif; font-size: clamp(1.4rem, 3vw, 2.3rem); font-weight: 650; letter-spacing: -.035em; text-transform: uppercase; }
-  .value-row svg { color: rgba(255,255,255,.42); }
-  .testimonials-section { background: var(--cream); }
-  .testimonial-grid { display: grid; gap: 1rem; }
-  .testimonial-card { padding: clamp(1.4rem, 3vw, 2.4rem); background: var(--paper); }
-  .testimonial-card > svg { color: var(--amber); }
-  .sample-label { margin: 1.5rem 0 .7rem; color: var(--amber-deep); font-size: .62rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-  .testimonial-card blockquote { margin: 0; font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 580; line-height: 1.55; }
-  .sample-person { margin: 1.5rem 0 0; color: var(--muted); font-size: .72rem; }
-  @media (min-width: 48rem) { .scroll-cue { display: flex; } }
-  @media (min-width: 48rem) { .project-grid { grid-template-columns: repeat(2, 1fr); } .testimonial-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (min-width: 64rem) { .intro-grid { grid-template-columns: minmax(11rem, .45fr) 1.55fr; } .intro-copy { grid-template-columns: 1.35fr .65fr; gap: 3rem; } .section-heading { grid-template-columns: 1.2fr .8fr; } .service-grid { grid-template-columns: repeat(3, 1fr); } .values-grid { grid-template-columns: 1fr 1fr; } }
-  @media (max-width: 47.99rem) { .project-grid article:nth-child(n + 5) { display: none; } }
-  @media (max-width: 35rem) { .hero-actions .button { width: 100%; } .hero-note { display: none; } }
+  .intro-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; }
+  .intro-grid > * { min-width: 0; }
+  .intro-grid .display { max-width: 15ch; font-size: clamp(2.8rem, 6.5vw, 6.2rem); }
+  .intro-copy { display: grid; gap: 1rem; max-width: 52rem; margin-top: 1.75rem; }
+  .intro-copy p { margin: 0; color: var(--muted); }
+  .services-section { background: var(--brand-light); }
+  .section-heading { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: clamp(2.5rem, 5vw, 4.5rem); }
+  .section-heading .display { max-width: 14ch; font-size: clamp(2.8rem, 6vw, 5.7rem); }
+  .text-link { display: inline-flex; width: fit-content; align-items: center; gap: .5rem; color: var(--brand-primary-strong); font-size: .72rem; font-weight: 800; letter-spacing: .075em; text-transform: uppercase; }
+  .services-grid { display: grid; gap: 1rem; }
+  .service-card { display: grid; min-width: 0; border: 1px solid var(--line); background: var(--paper); transition: transform .25s ease, box-shadow .25s ease; transition-delay: var(--stagger, 0ms); }
+  .service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-soft); }
+  .service-visual { position: relative; display: flex; min-height: 9rem; align-items: flex-end; justify-content: space-between; overflow: hidden; padding: 1.25rem; background: var(--brand-dark); color: var(--brand-primary); }
+  .service-visual::before { position: absolute; inset: 0; opacity: .18; background-image: linear-gradient(rgba(255,255,255,.25) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.25) 1px, transparent 1px); background-size: 2.5rem 2.5rem; content: ""; }
+  .service-visual::after { position: absolute; right: -3rem; bottom: -5rem; width: 10rem; height: 10rem; border: 1px solid rgba(252,164,12,.45); border-radius: 50%; content: ""; }
+  .service-visual span, .service-visual svg { position: relative; z-index: 1; }
+  .service-visual span { font-size: .66rem; font-weight: 800; letter-spacing: .1em; }
+  .service-card-copy { display: flex; min-height: 15rem; flex-direction: column; padding: 1.35rem; }
+  .service-card h3 { margin: 0; font-family: "Archivo Variable", sans-serif; font-size: 1.2rem; font-weight: 720; letter-spacing: -.025em; line-height: 1.15; text-transform: uppercase; }
+  .service-card p { margin: .8rem 0 1.2rem; color: var(--muted); font-size: .78rem; }
+  .service-card a { display: inline-flex; align-items: center; gap: .4rem; margin-top: auto; color: var(--brand-primary-strong); font-size: .66rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+  .projects-section { background: var(--paper); }
+  .project-grid { display: grid; gap: 3rem 1.5rem; }
+  .reasons-section { background: var(--brand-dark); color: white; }
+  .reasons-layout { display: grid; gap: clamp(3rem, 7vw, 7rem); }
+  .reasons-heading { align-self: start; }
+  .reasons-heading .eyebrow { color: var(--brand-primary); }
+  .reasons-heading .display { max-width: 12ch; font-size: clamp(2.8rem, 6vw, 5.5rem); }
+  .reasons-list { border-top: 1px solid rgba(255,255,255,.18); }
+  .reasons-list article { display: grid; grid-template-columns: 2.5rem 1fr; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,.18); padding: 1.5rem 0; transition-delay: var(--stagger, 0ms); }
+  .reasons-list article > span { color: var(--brand-primary); font-size: .64rem; font-weight: 780; }
+  .reasons-list h3 { margin: 0; font-family: "Archivo Variable", sans-serif; font-size: 1.1rem; text-transform: uppercase; }
+  .reasons-list p { margin: .55rem 0 0; color: rgba(255,255,255,.62); font-size: .8rem; }
+  .feedback-section { padding-block: clamp(4rem, 8vw, 7rem); background: var(--brand-primary); }
+  .feedback-card { text-align: center; }
+  .feedback-card .eyebrow { color: var(--brand-dark); }
+  .feedback-card .display { font-size: clamp(3rem, 7vw, 6.5rem); }
+  .feedback-card > p:last-child { max-width: 36rem; margin: 1.25rem auto 0; }
+  @keyframes hero-copy-in { from { opacity: 0; transform: translateY(12px); } }
+  @media (min-width: 48rem) { .hero-scroll { display: flex; } .services-grid { grid-template-columns: repeat(2, 1fr); } .project-grid { grid-template-columns: repeat(2, 1fr); } .project-grid :global(.project-card:last-child) { grid-column: 1 / -1; width: calc(50% - .75rem); } }
+  @media (min-width: 64rem) { .intro-grid { grid-template-columns: .45fr 1.55fr; } .intro-copy { grid-template-columns: 1fr 1fr; } .section-heading { flex-direction: row; align-items: flex-end; justify-content: space-between; } .services-grid { grid-template-columns: repeat(3, 1fr); } .reasons-layout { grid-template-columns: .9fr 1.1fr; } .reasons-heading { position: sticky; top: 2rem; } }
+  @media (max-width: 39rem) { .hero-actions .button { width: 100%; } :global(.hero-picture img) { object-position: 62% center; } }
+  @media (prefers-reduced-motion: reduce) { .hero-copy { animation: none; } }
 </style>

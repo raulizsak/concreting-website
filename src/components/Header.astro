@@ -1,27 +1,28 @@
 ---
-import { ArrowUpRight, Menu, Phone, X } from '@lucide/astro';
+import { ArrowUpRight, Mail, Menu, Phone, X } from '@lucide/astro';
 import { siteConfig } from '../config/site';
 
 const pathname = Astro.url.pathname;
+const isCurrent = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 ---
 
 <header class="site-header" data-header>
   <div class="header-inner">
     <a class="brand" href="/" aria-label={`${siteConfig.businessName} home`}>
-      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <img src="/logo/geli-construction-services-logo.webp" width="720" height="720" alt="" />
       <span>{siteConfig.businessName}</span>
     </a>
 
     <nav class="desktop-nav" aria-label="Main navigation">
       {siteConfig.nav.map((item) => (
-        <a href={item.href} aria-current={pathname === item.href ? 'page' : undefined}>{item.label}</a>
+        <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>
       ))}
     </nav>
 
     <div class="header-actions">
       <a class="phone-link" href={siteConfig.phoneHref}>
         <Phone size={16} stroke-width={2.2} aria-hidden="true" />
-        <span>Call {siteConfig.phoneDisplay}</span>
+        <span>{siteConfig.phoneDisplay}</span>
       </a>
       <a class="quote-link" href="/contact/">
         Get a free quote
@@ -38,12 +39,15 @@ const pathname = Astro.url.pathname;
   <div class="mobile-menu" id="mobile-menu" hidden>
     <nav aria-label="Mobile navigation">
       {siteConfig.nav.map((item, index) => (
-        <a href={item.href} aria-current={pathname === item.href ? 'page' : undefined}>
+        <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
           <span>0{index + 1}</span>{item.label}<ArrowUpRight size={20} aria-hidden="true" />
         </a>
       ))}
     </nav>
-    <p>Ready to discuss your outdoor project?</p>
+    <div class="mobile-menu-contact">
+      <a href={siteConfig.phoneHref}><Phone size={17} aria-hidden="true" /> {siteConfig.phoneDisplay}</a>
+      <a href={siteConfig.emailHref}><Mail size={17} aria-hidden="true" /> {siteConfig.emailDisplay}</a>
+    </div>
     <a class="button" href="/contact/">Get a free quote</a>
   </div>
 </header>
@@ -53,78 +57,61 @@ const pathname = Astro.url.pathname;
   const toggle = header?.querySelector<HTMLButtonElement>('.menu-toggle');
   const menu = header?.querySelector<HTMLElement>('#mobile-menu');
 
-  const closeMenu = () => {
+  const closeMenu = (returnFocus = false) => {
     if (!toggle || !menu) return;
     toggle.setAttribute('aria-expanded', 'false');
     toggle.setAttribute('aria-label', 'Open menu');
     menu.hidden = true;
     document.body.classList.remove('menu-open');
+    if (returnFocus) toggle.focus();
   };
 
   toggle?.addEventListener('click', () => {
-    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', String(!isOpen));
-    toggle.setAttribute('aria-label', isOpen ? 'Open menu' : 'Close menu');
-    if (menu) menu.hidden = isOpen;
-    document.body.classList.toggle('menu-open', !isOpen);
+    const opening = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(opening));
+    toggle.setAttribute('aria-label', opening ? 'Close menu' : 'Open menu');
+    if (menu) menu.hidden = !opening;
+    document.body.classList.toggle('menu-open', opening);
+    if (opening) menu?.querySelector<HTMLAnchorElement>('a')?.focus();
   });
 
-  menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => closeMenu()));
   window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      closeMenu();
-      toggle?.focus();
-    }
+    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') closeMenu(true);
+  });
+  window.matchMedia('(min-width: 64rem)').addEventListener('change', (event) => {
+    if (event.matches) closeMenu();
   });
 </script>
 
 <style>
-  .site-header {
-    position: absolute;
-    inset: 0 0 auto;
-    z-index: 50;
-    border-bottom: 1px solid rgba(255,255,255,.2);
-    color: white;
-  }
-  .header-inner {
-    display: flex;
-    width: min(100% - 2rem, 91rem);
-    min-height: 5.4rem;
-    align-items: center;
-    justify-content: space-between;
-    margin-inline: auto;
-    gap: 1.5rem;
-  }
-  .brand { display: flex; align-items: center; gap: .75rem; max-width: 12.5rem; font-family: "Archivo Variable", sans-serif; font-size: .72rem; font-weight: 760; letter-spacing: .075em; line-height: 1.2; text-transform: uppercase; }
-  .brand-mark { position: relative; display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border: 1px solid rgba(255,255,255,.54); border-radius: 50%; }
-  .brand-mark i { position: absolute; width: 1rem; height: 2px; background: var(--amber); transform-origin: center; }
-  .brand-mark i:nth-child(1) { transform: rotate(0deg); }
-  .brand-mark i:nth-child(2) { transform: rotate(60deg); }
-  .brand-mark i:nth-child(3) { transform: rotate(-60deg); }
-  .desktop-nav { display: none; align-items: center; gap: clamp(1.1rem, 2vw, 2.25rem); }
+  .site-header { position: absolute; inset: 0 0 auto; z-index: 50; border-bottom: 1px solid rgba(255,255,255,.2); color: white; }
+  .header-inner { display: flex; width: min(100% - 2rem, 91rem); min-height: 5.5rem; align-items: center; justify-content: space-between; margin-inline: auto; gap: 1.25rem; }
+  .brand { display: flex; min-width: 0; align-items: center; gap: .75rem; max-width: 14rem; font-family: "Archivo Variable", sans-serif; font-size: .72rem; font-weight: 760; letter-spacing: .075em; line-height: 1.2; text-transform: uppercase; }
+  .brand img { width: 3.25rem; height: 3.25rem; flex: 0 0 auto; border-radius: 50%; object-fit: cover; animation: logo-arrive .62s cubic-bezier(.2,.7,.2,1) both; }
+  .brand span { min-width: 0; }
+  .desktop-nav { display: none; align-items: center; gap: clamp(1rem, 1.7vw, 2rem); }
   .desktop-nav a { position: relative; padding-block: 2rem; font-family: "Archivo Variable", sans-serif; font-size: .68rem; font-weight: 680; letter-spacing: .1em; text-transform: uppercase; }
-  .desktop-nav a::after { position: absolute; right: 0; bottom: 1.45rem; left: 0; height: 2px; background: var(--amber); content: ""; transform: scaleX(0); transform-origin: left; transition: transform .2s ease; }
+  .desktop-nav a::after { position: absolute; right: 0; bottom: 1.45rem; left: 0; height: 2px; background: var(--brand-primary); content: ""; transform: scaleX(0); transform-origin: left; transition: transform .24s ease; }
   .desktop-nav a:hover::after, .desktop-nav a[aria-current="page"]::after { transform: scaleX(1); }
-  .header-actions { display: none; align-items: center; gap: 1rem; }
-  .phone-link, .quote-link { display: flex; align-items: center; gap: .5rem; font-family: "Archivo Variable", sans-serif; font-size: .68rem; font-weight: 740; letter-spacing: .07em; text-transform: uppercase; }
-  .quote-link { min-height: 3rem; padding: .8rem 1rem; background: var(--amber); color: var(--ink); }
-  .menu-toggle { display: grid; width: 3rem; height: 3rem; place-items: center; border: 1px solid rgba(255,255,255,.4); border-radius: .25rem; background: rgba(23,24,21,.32); color: white; }
+  .header-actions { display: none; align-items: center; gap: .9rem; }
+  .phone-link, .quote-link { display: flex; align-items: center; gap: .5rem; font-family: "Archivo Variable", sans-serif; font-size: .67rem; font-weight: 740; letter-spacing: .07em; text-transform: uppercase; }
+  .quote-link { min-height: 3rem; padding: .8rem 1rem; background: var(--brand-primary); color: var(--brand-dark); transition: transform .2s ease, background .2s ease; }
+  .quote-link:hover { background: var(--brand-primary-soft); transform: translateY(-2px); }
+  .menu-toggle { display: grid; width: 3rem; height: 3rem; place-items: center; border: 1px solid rgba(255,255,255,.4); border-radius: .2rem; background: rgba(23,22,21,.42); color: white; cursor: pointer; }
   .menu-close-icon { display: none; }
   .menu-toggle[aria-expanded="true"] .menu-open-icon { display: none; }
   .menu-toggle[aria-expanded="true"] .menu-close-icon { display: block; }
-  .mobile-menu { position: fixed; inset: 5.4rem 0 0; padding: 2rem 1rem calc(2rem + env(safe-area-inset-bottom)); background: var(--ink); }
+  .mobile-menu { position: fixed; inset: 5.5rem 0 0; overflow-y: auto; padding: 2rem 1rem calc(6.5rem + env(safe-area-inset-bottom)); background: var(--brand-dark); }
   .mobile-menu[hidden] { display: none; }
   .mobile-menu nav { border-top: 1px solid rgba(255,255,255,.16); }
   .mobile-menu nav a { display: grid; grid-template-columns: 2rem 1fr auto; align-items: center; border-bottom: 1px solid rgba(255,255,255,.16); padding: 1rem .25rem; font-family: "Archivo Variable", sans-serif; font-size: clamp(1.5rem, 7vw, 2.2rem); font-weight: 690; letter-spacing: -.04em; text-transform: uppercase; }
-  .mobile-menu nav a span { color: var(--amber); font-size: .64rem; letter-spacing: .08em; }
-  .mobile-menu p { margin: 2rem 0 1rem; color: rgba(255,255,255,.66); }
+  .mobile-menu nav a span { color: var(--brand-primary); font-size: .64rem; letter-spacing: .08em; }
+  .mobile-menu-contact { display: grid; gap: .65rem; margin: 1.75rem 0; color: rgba(255,255,255,.72); font-size: .76rem; }
+  .mobile-menu-contact a { display: flex; align-items: center; gap: .6rem; overflow-wrap: anywhere; }
   .mobile-menu .button { width: 100%; }
-  @media (min-width: 64rem) {
-    .desktop-nav, .header-actions { display: flex; }
-    .menu-toggle { display: none; }
-  }
-  @media (min-width: 64rem) and (max-width: 75rem) {
-    .phone-link span { display: none; }
-    .desktop-nav { gap: 1rem; }
-  }
+  @keyframes logo-arrive { from { opacity: 0; transform: translateY(-5px) scale(.97); } }
+  @media (min-width: 64rem) { .desktop-nav, .header-actions { display: flex; } .menu-toggle { display: none; } }
+  @media (min-width: 64rem) and (max-width: 76rem) { .phone-link span { display: none; } .desktop-nav { gap: .85rem; } .brand span { max-width: 7.5rem; } }
+  @media (prefers-reduced-motion: reduce) { .brand img { animation: none; } }
 </style>

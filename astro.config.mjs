@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: process.env.PUBLIC_SITE_URL ?? 'https://concreting-website.netlify.app',
+  site: process.env.PUBLIC_SITE_URL ?? 'https://geliconstructionservices.com.au',
   output: 'static',
   trailingSlash: 'always',
   integrations: [sitemap({
