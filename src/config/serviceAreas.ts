@@ -20,7 +20,7 @@ export const serviceAreaGroups = [
   {
     name: 'Cardinia / Gippsland',
     suburbs: [
-      'Nar Nar Goon', 'Tynong', 'Garfield', 'Bunyip', 'Longwarry', 'Drouin', 'Drouin South',
+      'Cardinia', 'Nar Nar Goon', 'Tynong', 'Garfield', 'Bunyip', 'Longwarry', 'Drouin', 'Drouin South',
       'Warragul', 'Yarragon', 'Trafalgar', 'Neerim South', 'Neerim North', 'Nilma', 'Buln Buln',
     ],
   },

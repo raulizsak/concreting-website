@@ -106,6 +106,10 @@ const socialLinksPresent = [
 
 const localities = JSON.parse(readFileSync(join(root, 'public', 'data', 'vic-localities.json'), 'utf8')).localities;
 const localityShapeValid = localities.length > 3000 && localities.every((entry) => Array.isArray(entry) && entry.length === 4);
+const cardiniaLocality = localities.find(([name]) => name === 'CARDINIA');
+const cardiniaLocalityValid = JSON.stringify(cardiniaLocality) === JSON.stringify(['CARDINIA', '3978', -38.147, 145.423]);
+const serviceAreaConfig = readFileSync(join(root, 'src', 'config', 'serviceAreas.ts'), 'utf8');
+const cardiniaConfigured = /name: 'Cardinia \/ Gippsland'[\s\S]*?suburbs:\s*\[[\s\S]*?'Cardinia'/.test(serviceAreaConfig);
 const robots = readFileSync(join(dist, 'robots.txt'), 'utf8');
 const sitemapUsesProductionDomain = walk(dist)
   .filter((file) => /sitemap.*\.xml$/i.test(file))
@@ -129,6 +133,9 @@ const report = {
   quoteLinksTargetForm,
   socialLinksPresent,
   localityShapeValid,
+  cardiniaLocality,
+  cardiniaLocalityValid,
+  cardiniaConfigured,
   robotsUsesProductionDomain: robots.includes('https://geliconstructionservices.com.au/sitemap-index.xml'),
   sitemapUsesProductionDomain,
 };
@@ -147,6 +154,8 @@ if (
   || !quoteLinksTargetForm
   || !socialLinksPresent
   || !localityShapeValid
+  || !cardiniaLocalityValid
+  || !cardiniaConfigured
   || !report.robotsUsesProductionDomain
   || !sitemapUsesProductionDomain
 ) process.exitCode = 1;
