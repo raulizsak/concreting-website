@@ -36,6 +36,7 @@ const structuredData = {
   logo: `${siteConfig.domain}/logo/geli-construction-services-logo.jpeg`,
   image: `${siteConfig.domain}/og.png`,
   description: siteConfig.description,
+  sameAs: Object.values(siteConfig.socials),
   areaServed: servicedSuburbNames.map((name) => ({ '@type': 'City', name })),
   makesOffer: siteConfig.services.map((service) => ({
     '@type': 'Offer',
@@ -81,7 +82,7 @@ const structuredData = {
     <Footer />
     <div class="mobile-contact" aria-label="Quick contact">
       <a href={siteConfig.phoneHref}>Call now</a>
-      <a href="/contact/">Get a quote</a>
+      <a href="/contact/#quote-form">Get a quote</a>
     </div>
     <RevealObserver />
   </body>

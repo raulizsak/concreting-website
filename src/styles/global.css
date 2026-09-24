@@ -41,7 +41,7 @@ html {
 
 body {
   margin: 0;
-  min-width: 320px;
+  min-width: 0;
   background: var(--paper);
   color: var(--brand-dark);
   font-family: "Manrope Variable", "Segoe UI", sans-serif;

@@ -1,16 +1,40 @@
 ---
+import { HardHat, MessageSquareText, ShieldCheck, Shovel } from '@lucide/astro';
+
 interface Props {
   eyebrow: string;
   title: string;
   intro: string;
   compact?: boolean;
+  visual: 'services' | 'projects' | 'about' | 'contact' | 'privacy';
 }
 
-const { eyebrow, title, intro, compact = false } = Astro.props;
+const { eyebrow, title, intro, compact = false, visual } = Astro.props;
+const iconMap = {
+  services: Shovel,
+  about: HardHat,
+  contact: MessageSquareText,
+  privacy: ShieldCheck,
+} as const;
+const Icon = visual === 'projects' ? null : iconMap[visual];
 ---
 
 <section class:list={['page-hero', compact && 'page-hero--compact']}>
   <div class="page-hero-grid" aria-hidden="true"></div>
+  <div class:list={['page-hero-visual', `page-hero-visual--${visual}`]} aria-hidden="true">
+    {visual === 'projects' ? (
+      <svg viewBox="0 0 260 190" fill="none" aria-hidden="true">
+        <path d="M48 141h126l18 15H65z" />
+        <path d="M73 141h90M84 156h96" />
+        <path d="M112 126h67l-13-49h-38z" />
+        <path d="M130 78h27l17 48" />
+        <path d="M128 88 89 60 56 105" />
+        <path d="m91 61-23 61-33 10 17 13 38-5" />
+        <circle cx="99" cy="148" r="8" />
+        <circle cx="164" cy="148" r="8" />
+      </svg>
+    ) : Icon && <Icon size={300} stroke-width={1.05} aria-hidden="true" />}
+  </div>
   <div class="container page-hero-inner" data-reveal>
     <p class="eyebrow">{eyebrow}</p>
     <h1 class="display">{title}</h1>
@@ -20,13 +44,26 @@ const { eyebrow, title, intro, compact = false } = Astro.props;
 
 <style>
   .page-hero { position: relative; overflow: hidden; padding: clamp(10rem, 19vw, 14rem) 0 clamp(4.5rem, 9vw, 8rem); background: var(--brand-dark); color: white; }
-  .page-hero::after { position: absolute; right: -8rem; bottom: -16rem; width: 38rem; height: 38rem; border: 1px solid rgba(252,164,12,.2); border-radius: 50%; content: ""; }
   .page-hero-grid { position: absolute; inset: 0 0 0 52%; opacity: .12; background-image: linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px); background-size: 4.5rem 4.5rem; }
+  .page-hero-visual { position: absolute; right: clamp(-5rem, -2vw, -1rem); bottom: clamp(-4rem, -3vw, -1rem); z-index: 0; width: clamp(18rem, 36vw, 36rem); color: var(--brand-primary); opacity: .18; animation: hero-visual-in .72s cubic-bezier(.2,.7,.2,1) both .12s; }
+  .page-hero-visual::before { position: absolute; inset: 12% 9%; border: 1px solid rgba(255,255,255,.18); content: ""; transform: rotate(-7deg); }
+  .page-hero-visual :global(svg) { display: block; width: 100%; height: auto; }
+  .page-hero-visual :global(svg *) { stroke-dasharray: 520; stroke-dashoffset: 0; animation: hero-stroke-in .8s ease-out both .18s; }
+  .page-hero-visual--projects svg { stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.2; }
+  .page-hero-visual--about { bottom: -5rem; transform: rotate(-4deg); }
+  .page-hero-visual--contact { right: -3rem; }
+  .page-hero-visual--privacy { right: -2rem; bottom: -5rem; }
   .page-hero-inner { position: relative; z-index: 1; }
   .page-hero .eyebrow { color: var(--brand-primary); }
   .page-hero .display { max-width: 14ch; overflow-wrap: break-word; font-size: clamp(2.55rem, 9vw, 7.4rem); }
-  .page-hero--compact { padding: clamp(8rem, 14vw, 10.5rem) 0 clamp(3.75rem, 6vw, 5.5rem); }
+  .page-hero--compact { padding: clamp(8rem, 14vw, 10.5rem) 0 clamp(3.4rem, 5vw, 4.75rem); }
+  .page-hero--compact .display { font-size: clamp(2.55rem, 7.5vw, 6.4rem); }
+  .page-hero--compact .page-hero-copy { margin-top: 1.4rem; }
   .page-hero-copy { max-width: 46rem; margin-top: 2rem; }
   .page-hero-copy p { margin: 0; color: rgba(255,255,255,.74); font-size: clamp(1rem, 2vw, 1.22rem); }
+  @keyframes hero-visual-in { from { opacity: 0; transform: translate(1.2rem, 1.2rem) scale(.96); } }
+  @keyframes hero-stroke-in { from { stroke-dashoffset: 520; } }
   @media (min-width: 64rem) { .page-hero-copy { margin-left: 35%; } }
+  @media (max-width: 47.99rem) { .page-hero-visual { right: -7rem; bottom: -2rem; width: 23rem; opacity: .12; } }
+  @media (prefers-reduced-motion: reduce) { .page-hero-visual, .page-hero-visual :global(svg *) { animation: none; } }
 </style>

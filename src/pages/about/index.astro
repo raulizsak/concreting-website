@@ -13,13 +13,18 @@ import SectionCta from '../../components/SectionCta.astro';
     eyebrow="About Geli Construction Services"
     title="Practical outdoor construction for your property."
     intro="Geli Construction Services provides concreting and outdoor construction services across selected areas of South-East Melbourne, the Dandenong Ranges, Gippsland, Bass Coast, South Gippsland and the Latrobe Valley."
+    visual="about"
+    compact
   />
 
   <section class="section about-intro">
     <div class="container about-grid">
       <div class="brand-visual" data-reveal>
-        <div class="brand-visual-grid" aria-hidden="true"></div>
-        <img src="/logo/geli-construction-services-logo.webp" width="720" height="720" alt="Geli Construction Services logo" />
+        <div class="brand-logo-shell">
+          <span class="brand-ring brand-ring--outer" aria-hidden="true"></span>
+          <span class="brand-ring brand-ring--inner" aria-hidden="true"></span>
+          <img src="/logo/geli-construction-services-logo.webp" width="720" height="720" alt="Geli Construction Services logo" />
+        </div>
         <div class="service-words" aria-hidden="true">
           <span>Concrete</span><span>Stonework</span><span>Excavation</span><span>Outdoor construction</span>
         </div>
@@ -29,7 +34,7 @@ import SectionCta from '../../components/SectionCta.astro';
         <h2 class="display">From preparation to the finished outdoor space.</h2>
         <p class="lead">Geli Construction Services works across a range of outdoor projects, including concrete driveways, footpaths, alfresco areas and steps, as well as excavation, stonework, outdoor tiling, retaining walls, irrigation, drainage and outdoor finishing.</p>
         <p>Projects vary from focused concrete work through to jobs involving several stages or different outdoor services. Tell us what you're planning and where the work is located so we can discuss the scope with you.</p>
-        <a class="text-link" href="/contact/">Tell us about your project <ArrowRight size={18} aria-hidden="true" /></a>
+        <a class="text-link" href="/contact/#quote-form">Tell us about your project <ArrowRight size={18} aria-hidden="true" /></a>
       </div>
     </div>
   </section>
@@ -65,12 +70,17 @@ import SectionCta from '../../components/SectionCta.astro';
 <style>
   .about-intro { background: var(--paper); }
   .about-grid { display: grid; align-items: center; gap: clamp(2.5rem, 7vw, 7rem); }
-  .brand-visual { position: relative; display: grid; min-height: clamp(28rem, 60vw, 40rem); place-items: center; overflow: hidden; padding: 3rem; background: var(--brand-dark); }
-  .brand-visual-grid { position: absolute; inset: 0; opacity: .15; background-image: linear-gradient(rgba(255,255,255,.24) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.24) 1px, transparent 1px); background-size: 4rem 4rem; }
-  .brand-visual::after { position: absolute; right: -10rem; bottom: -12rem; width: 28rem; height: 28rem; border: 1px solid rgba(252,164,12,.45); border-radius: 50%; content: ""; }
-  .brand-visual img { position: relative; z-index: 1; width: min(70%, 21rem); aspect-ratio: 1; border-radius: 50%; box-shadow: 0 28px 70px rgba(0,0,0,.42); }
-  .service-words { position: absolute; inset: auto 1.25rem 1.25rem; z-index: 2; display: flex; flex-wrap: wrap; gap: .45rem; }
-  .service-words span { border: 1px solid rgba(255,255,255,.25); padding: .4rem .55rem; color: rgba(255,255,255,.72); font-size: .58rem; font-weight: 720; letter-spacing: .08em; text-transform: uppercase; }
+  .about-grid > * { min-width: 0; }
+  .brand-visual { position: relative; display: grid; min-height: clamp(25rem, 55vw, 37rem); place-items: center; padding: clamp(2.5rem, 8vw, 5rem); background: radial-gradient(circle at 50% 48%, rgba(252,164,12,.1), transparent 47%); }
+  .brand-logo-shell { position: relative; display: grid; width: min(72vw, 23rem); aspect-ratio: 1; place-items: center; }
+  .brand-logo-shell img { position: relative; z-index: 2; width: 72%; aspect-ratio: 1; border-radius: 50%; box-shadow: 0 24px 55px rgba(23,22,21,.2); }
+  .brand-ring { position: absolute; border: 1px solid rgba(199,108,6,.32); border-radius: 50%; }
+  .brand-ring--outer { inset: 0; }
+  .brand-ring--inner { inset: 10%; border-color: rgba(23,22,21,.16); }
+  .service-words { position: absolute; right: 0; bottom: 1rem; left: 0; z-index: 3; display: flex; flex-wrap: wrap; justify-content: center; gap: .45rem; }
+  .service-words span { border: 1px solid var(--line); padding: .4rem .55rem; background: rgba(255,255,255,.7); color: var(--muted); font-size: .58rem; font-weight: 720; letter-spacing: .08em; text-transform: uppercase; }
+  :global(.reveal-ready) .brand-visual[data-reveal] { opacity: 0; transform: scale(.96) rotate(-1deg); }
+  :global(.reveal-ready) .brand-visual[data-reveal].is-revealed { opacity: 1; transform: scale(1) rotate(0); transition-duration: .7s; }
   .about-copy .display { max-width: 13ch; font-size: clamp(2.8rem, 6vw, 5.4rem); }
   .about-copy .lead { margin: 1.5rem 0 0; font-size: clamp(1.05rem, 2vw, 1.22rem); }
   .about-copy > p:not(.eyebrow):not(.lead) { margin: 1rem 0 0; color: var(--muted); font-size: .9rem; }
@@ -85,4 +95,5 @@ import SectionCta from '../../components/SectionCta.astro';
   .approach-grid p { margin: 0; color: var(--muted); font-size: .82rem; }
   @media (min-width: 48rem) { .approach-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (min-width: 64rem) { .about-grid { grid-template-columns: 1fr 1fr; } }
+  @media (prefers-reduced-motion: reduce) { :global(.reveal-ready) .brand-visual[data-reveal], :global(.reveal-ready) .brand-visual[data-reveal].is-revealed { opacity: 1; transform: none; transition: none; } }
 </style>

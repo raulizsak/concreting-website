@@ -184,8 +184,8 @@ import { serviceAreaGroups } from '../config/serviceAreas';
     result.hidden = false;
     result.className = `checker-result ${covered ? 'is-covered' : 'is-outside'}`;
     result.innerHTML = covered
-      ? `<strong>Great news—we service ${place}.</strong><span>Your suburb is within our usual service area.</span><a href="/contact/?location=${encodeURIComponent(place)}">Request a quote <span aria-hidden="true">→</span></a>`
-      : `<strong>${place} is outside our usual area.</strong><span>Send us the project details anyway and we’ll let you know if we can make the travel work.</span><a href="/contact/?location=${encodeURIComponent(place)}">Ask about your project <span aria-hidden="true">→</span></a>`;
+      ? `<strong>Great news—we service ${place}.</strong><span>Your suburb is within our usual service area.</span><a href="/contact/?location=${encodeURIComponent(place)}#quote-form">Request a quote <span aria-hidden="true">→</span></a>`
+      : `<strong>${place} is outside our usual area.</strong><span>Send us the project details anyway and we’ll let you know if we can make the travel work.</span><a href="/contact/?location=${encodeURIComponent(place)}#quote-form">Ask about your project <span aria-hidden="true">→</span></a>`;
 
     const instance = mapInstance ?? await initialiseMap().catch(() => undefined);
     if (!mapInstance) mapInstance = instance;

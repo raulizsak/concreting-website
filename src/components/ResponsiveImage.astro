@@ -8,6 +8,7 @@ interface Props {
   sizes?: string;
   width?: number;
   height?: number;
+  widths?: readonly number[];
   class?: string;
 }
 
@@ -20,10 +21,11 @@ const {
   sizes = variant === 'hero' ? '100vw' : '(min-width: 1024px) 50vw, 100vw',
   width = variant === 'hero' ? 1586 : 1200,
   height = variant === 'hero' ? 992 : 900,
+  widths: suppliedWidths,
   class: className,
 } = Astro.props;
 
-const widths = variant === 'hero' ? [480, 768, 1200, 1536] : [480, 800, 1200];
+const widths = suppliedWidths ?? (variant === 'hero' ? [480, 768, 1200, 1536] : [480, 800, 1200]);
 const srcset = (format: string) => widths.map((imageWidth) => `${src}-${imageWidth}.${format} ${imageWidth}w`).join(', ');
 ---
 

@@ -1,5 +1,6 @@
 ---
 import { ArrowUpRight, Mail, Phone } from '@lucide/astro';
+import SocialLinks from './SocialLinks.astro';
 import { siteConfig } from '../config/site';
 ---
 
@@ -13,6 +14,7 @@ import { siteConfig } from '../config/site';
       <p>Concreting and outdoor construction across selected areas of South-East Melbourne, the Dandenong Ranges, Gippsland, Bass Coast, South Gippsland and the Latrobe Valley.</p>
       <a class="footer-contact-link" href={siteConfig.phoneHref}><Phone size={18} aria-hidden="true" /> {siteConfig.phoneDisplay}</a>
       <a class="footer-contact-link" href={siteConfig.emailHref}><Mail size={18} aria-hidden="true" /> {siteConfig.emailDisplay}</a>
+      <div class="footer-socials"><SocialLinks label="Follow us" variant="dark" /></div>
     </div>
 
     <div class="footer-columns">
@@ -32,7 +34,7 @@ import { siteConfig } from '../config/site';
       <div>
         <p class="footer-label">Service area</p>
         <p>{siteConfig.serviceArea}</p>
-        <a class="footer-quote" href="/contact/">Request a quote <ArrowUpRight size={17} aria-hidden="true" /></a>
+        <a class="footer-quote" href="/contact/#quote-form">Request a quote <ArrowUpRight size={17} aria-hidden="true" /></a>
       </div>
     </div>
   </div>
@@ -52,6 +54,7 @@ import { siteConfig } from '../config/site';
   .footer-logo img { width: 4.25rem; height: 4.25rem; flex: 0 0 auto; border-radius: 50%; object-fit: cover; }
   .footer-brand > p { margin: 1.25rem 0 1.5rem; color: rgba(255,255,255,.58); font-size: .9rem; }
   .footer-contact-link { display: flex; width: fit-content; align-items: center; gap: .6rem; margin-top: .7rem; color: var(--brand-primary); font-family: "Archivo Variable", sans-serif; font-size: .8rem; font-weight: 710; overflow-wrap: anywhere; }
+  .footer-socials { margin-top: 1.25rem; }
   .footer-columns { display: grid; gap: 2.5rem; }
   .footer-label { margin: 0 0 1rem !important; color: rgba(255,255,255,.62) !important; font-family: "Archivo Variable", sans-serif; font-size: .65rem !important; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
   .footer-columns nav { display: grid; gap: .65rem; }

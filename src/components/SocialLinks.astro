@@ -1,0 +1,70 @@
+---
+import { siteConfig } from '../config/site';
+
+interface Props {
+  label?: string;
+  variant?: 'default' | 'dark' | 'compact';
+}
+
+const { label = 'Follow us', variant = 'default' } = Astro.props;
+const isValidSocialUrl = (value: string) => {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' && Boolean(url.hostname);
+  } catch {
+    return false;
+  }
+};
+const links = [
+  {
+    name: 'Instagram',
+    href: siteConfig.socials.instagram,
+    label: 'Follow Geli Construction Services on Instagram',
+    icon: 'instagram',
+  },
+  {
+    name: 'Facebook',
+    href: siteConfig.socials.facebook,
+    label: 'Follow Geli Construction Services on Facebook',
+    icon: 'facebook',
+  },
+].filter((link) => isValidSocialUrl(link.href));
+---
+
+{links.length > 0 && (
+  <div class:list={['social-links', `social-links--${variant}`]}>
+    <span class="social-label">{label}</span>
+    <div class="social-actions">
+      {links.map(({ name, href, label: accessibleLabel, icon }) => (
+        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={accessibleLabel} title={name}>
+          {icon === 'instagram' ? (
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.1" /><circle cx="17.4" cy="6.7" r=".9" fill="currentColor" stroke="none" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true">
+              <path d="M13.7 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5H17V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H7.5v3h2.8v8h3.4Z" />
+            </svg>
+          )}
+        </a>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .social-links { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+  .social-label { color: var(--muted); font-size: .68rem; font-weight: 720; letter-spacing: .055em; text-transform: uppercase; }
+  .social-actions { display: flex; gap: .45rem; }
+  .social-actions a { display: grid; width: 2.65rem; height: 2.65rem; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--brand-dark); transition: border-color .2s ease, background .2s ease, color .2s ease, transform .2s ease; }
+  .social-actions a:hover { border-color: var(--brand-primary-strong); background: var(--brand-primary); color: var(--brand-dark); transform: translateY(-2px); }
+  .social-actions a:hover :global(svg) { transform: translate(1px, -1px); }
+  .social-actions :global(svg) { transition: transform .2s ease; }
+  .social-links--dark .social-label { color: rgba(255,255,255,.58); }
+  .social-links--dark .social-actions a { border-color: rgba(255,255,255,.22); color: var(--brand-primary); }
+  .social-links--dark .social-actions a:hover { border-color: var(--brand-primary); color: var(--brand-dark); }
+  .social-links--compact { gap: .6rem; }
+  .social-links--compact .social-label { font-size: .62rem; }
+  .social-links--compact .social-actions a { width: 2.4rem; height: 2.4rem; }
+  @media (prefers-reduced-motion: reduce) { .social-actions a, .social-actions :global(svg) { transition: none; } }
+</style>

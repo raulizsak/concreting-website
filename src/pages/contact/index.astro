@@ -3,6 +3,7 @@ import { Mail, MapPin, Phone } from '@lucide/astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import QuoteForm from '../../components/QuoteForm.astro';
+import SocialLinks from '../../components/SocialLinks.astro';
 import { siteConfig } from '../../config/site';
 ---
 
@@ -14,6 +15,7 @@ import { siteConfig } from '../../config/site';
     eyebrow="Contact"
     title="Request a free quote"
     intro="Tell us what you're planning, where the project is located and the type of work you need."
+    visual="contact"
   />
 
   <section class="section contact-section">
@@ -36,6 +38,7 @@ import { siteConfig } from '../../config/site';
             <span><small>Service area</small><strong>{siteConfig.serviceArea}</strong></span>
           </div>
         </div>
+        <div class="contact-socials"><SocialLinks label="Follow us" /></div>
       </aside>
 
       <div class="form-panel" data-reveal>
@@ -58,6 +61,7 @@ import { siteConfig } from '../../config/site';
   .contact-list span { display: grid; min-width: 0; }
   .contact-list small { color: var(--muted); font-size: .62rem; font-weight: 740; letter-spacing: .08em; text-transform: uppercase; }
   .contact-list strong { font-family: "Archivo Variable", sans-serif; font-size: .88rem; font-weight: 690; overflow-wrap: anywhere; }
+  .contact-socials { margin-top: 1.5rem; }
   .form-panel { padding: clamp(1.25rem, 4vw, 2.5rem); background: var(--paper); box-shadow: var(--shadow); }
   .form-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; border-bottom: 1px solid var(--line); margin-bottom: 1.75rem; padding-bottom: 1rem; }
   .form-heading p, .form-heading span { margin: 0; font-size: .68rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; }

@@ -41,6 +41,7 @@ for (const file of htmlFiles) {
 const allHtml = htmlFiles.map((file) => readFileSync(file, 'utf8')).join('\n');
 const contactHtml = readFileSync(join(dist, 'contact', 'index.html'), 'utf8');
 const formChecks = {
+  quoteFormAnchor: /id="quote-form"/.test(contactHtml),
   namedForm: /name="quote-request"/.test(contactHtml),
   netlifyDetection: /data-netlify="true"/.test(contactHtml),
   formNameField: /name="form-name" value="quote-request"/.test(contactHtml),
@@ -84,6 +85,24 @@ const missingProjectRoutes = projectSlugs.filter((slug) => !existsSync(join(dist
 const expectedProjectImages = 114;
 const projectImageDirectory = join(dist, 'images', 'projects');
 const projectImageCount = existsSync(projectImageDirectory) ? walk(projectImageDirectory).filter((file) => /\.(?:avif|webp)$/i.test(file)).length : 0;
+const expectedServiceImages = 28;
+const serviceImageDirectory = join(dist, 'images', 'services');
+const serviceImageCount = existsSync(serviceImageDirectory) ? walk(serviceImageDirectory).filter((file) => /\.(?:avif|webp)$/i.test(file)).length : 0;
+const serviceImagesUseApprovedMappings = [
+  '/images/projects/plain-concrete-slab-installation/cover-',
+  '/images/services/excavation-',
+  '/images/services/stonework-outdoor-tiling-',
+  '/images/services/outdoor-finishing-',
+  '/images/services/irrigation-drainage-',
+  '/images/services/retaining-walls-',
+].every((source) => allHtml.includes(source));
+const rejectedImageNamesAbsent = ['IMG_7690', 'IMG_7692', 'IMG_7693'].every((name) => !allHtml.includes(name));
+const quoteLinksTargetForm = /href="\/contact\/#quote-form"/.test(allHtml)
+  && /href="\/contact\/\?service=concreting#quote-form"/.test(allHtml);
+const socialLinksPresent = [
+  'https://www.instagram.com/geliconstructionservices',
+  'https://www.facebook.com/profile.php?id=61594470905978',
+].every((url) => allHtml.includes(url));
 
 const localities = JSON.parse(readFileSync(join(root, 'public', 'data', 'vic-localities.json'), 'utf8')).localities;
 const localityShapeValid = localities.length > 3000 && localities.every((entry) => Array.isArray(entry) && entry.length === 4);
@@ -103,6 +122,12 @@ const report = {
   missingProjectRoutes,
   projectImageCount,
   expectedProjectImages,
+  serviceImageCount,
+  expectedServiceImages,
+  serviceImagesUseApprovedMappings,
+  rejectedImageNamesAbsent,
+  quoteLinksTargetForm,
+  socialLinksPresent,
   localityShapeValid,
   robotsUsesProductionDomain: robots.includes('https://geliconstructionservices.com.au/sitemap-index.xml'),
   sitemapUsesProductionDomain,
@@ -116,6 +141,11 @@ if (
   || foundForbiddenValues.length
   || missingProjectRoutes.length
   || projectImageCount !== expectedProjectImages
+  || serviceImageCount !== expectedServiceImages
+  || !serviceImagesUseApprovedMappings
+  || !rejectedImageNamesAbsent
+  || !quoteLinksTargetForm
+  || !socialLinksPresent
   || !localityShapeValid
   || !report.robotsUsesProductionDomain
   || !sitemapUsesProductionDomain

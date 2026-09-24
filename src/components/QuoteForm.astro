@@ -3,6 +3,7 @@ import { ArrowRight, Info } from '@lucide/astro';
 ---
 
 <form
+  id="quote-form"
   class="quote-form"
   name="quote-request"
   method="POST"
@@ -98,7 +99,7 @@ import { ArrowRight, Info } from '@lucide/astro';
 </script>
 
 <style>
-  .quote-form { display: grid; gap: 1.4rem; }
+  .quote-form { display: grid; gap: 1.4rem; scroll-margin-top: 6.5rem; }
   .honeypot { position: absolute; left: -9999px; }
   .field-grid { display: grid; gap: 1.4rem; }
   .field { display: grid; align-content: start; gap: .5rem; }

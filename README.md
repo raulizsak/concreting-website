@@ -60,7 +60,7 @@ Each project is one Markdown file in src/content/projects/, so no manual HTML pa
 3. Auto-orient and strip metadata while creating responsive AVIF and WebP derivatives:
 
    ~~~bash
-   node scripts/process-images.mjs "path/to/original.jpg" "public/images/projects/project-slug/cover" "480,800,1200"
+   node scripts/process-images.mjs "path/to/original.jpg" "public/images/projects/project-slug/cover" "480,800,1200" "4:3" "attention"
    ~~~
 
 4. Create src/content/projects/project-slug.md.
@@ -72,6 +72,8 @@ Each project is one Markdown file in src/content/projects/, so no manual HTML pa
 10. Visually inspect the card, detail page, gallery and lightbox before committing.
 
 Do not serve phone-camera originals directly, retain EXIF/GPS metadata, infer an address, or invent dates, dimensions, materials or customer details.
+
+Stock and supplied service-image provenance is recorded in `ASSET-SOURCES.md`. Keep that register current whenever service photography changes.
 
 ## Logo and social assets
 

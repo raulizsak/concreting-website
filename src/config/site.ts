@@ -10,6 +10,10 @@ export const siteConfig = {
   tagline: 'Concreting and outdoor construction for homes and outdoor spaces.',
   description:
     'Concreting, stonework, excavation, retaining walls, irrigation, drainage and outdoor finishing across South-East Melbourne, Gippsland and surrounding areas.',
+  socials: {
+    instagram: 'https://www.instagram.com/geliconstructionservices',
+    facebook: 'https://www.facebook.com/profile.php?id=61594470905978',
+  },
   nav: [
     { label: 'Home', href: '/' },
     { label: 'Services', href: '/services/' },
@@ -29,6 +33,10 @@ export const siteConfig = {
       cta: 'Request a concreting quote',
       filter: 'Concreting',
       icon: 'layers',
+      image: '/images/projects/plain-concrete-slab-installation/cover',
+      imageAlt: 'Finished plain concrete slab beside an existing building',
+      imageWidth: 1200,
+      imageHeight: 900,
     },
     {
       name: 'Excavation',
@@ -41,6 +49,10 @@ export const siteConfig = {
       cta: 'Request an excavation quote',
       filter: 'Excavation',
       icon: 'shovel',
+      image: '/images/services/excavation',
+      imageAlt: 'Excavator bucket working through rocky ground',
+      imageWidth: 1200,
+      imageHeight: 900,
     },
     {
       name: 'Stonework & Outdoor Tiling',
@@ -53,6 +65,11 @@ export const siteConfig = {
       cta: 'Request a stonework quote',
       filter: 'Stonework & Outdoor Tiling',
       icon: 'panels-top-left',
+      image: '/images/services/stonework-outdoor-tiling',
+      imageAlt: 'Grey outdoor stone paving laid in a clean rectangular pattern',
+      imageWidth: 379,
+      imageHeight: 284,
+      imageWidths: [240, 379],
     },
     {
       name: 'Outdoor Finishing & Landscaping',
@@ -65,6 +82,10 @@ export const siteConfig = {
       cta: 'Discuss your outdoor project',
       filter: 'Outdoor Finishing & Landscaping',
       icon: 'sprout',
+      image: '/images/services/outdoor-finishing',
+      imageAlt: 'Finished garden with lawn and layered residential planting',
+      imageWidth: 1200,
+      imageHeight: 900,
     },
     {
       name: 'Irrigation & Drainage',
@@ -77,6 +98,10 @@ export const siteConfig = {
       cta: 'Request a quote',
       filter: 'Irrigation & Drainage',
       icon: 'waves',
+      image: '/images/services/irrigation-drainage',
+      imageAlt: 'Ground-level sprinkler irrigating a residential garden lawn',
+      imageWidth: 1200,
+      imageHeight: 900,
     },
     {
       name: 'Retaining Walls',
@@ -89,6 +114,10 @@ export const siteConfig = {
       cta: 'Request a retaining wall quote',
       filter: 'Retaining Walls',
       icon: 'brick-wall',
+      image: '/images/services/retaining-walls',
+      imageAlt: 'Stone retaining wall in a residential garden setting',
+      imageWidth: 1200,
+      imageHeight: 900,
     },
   ],
 } as const;

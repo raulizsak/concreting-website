@@ -24,7 +24,7 @@ const isCurrent = (href: string) => href === '/' ? pathname === '/' : pathname.s
         <Phone size={16} stroke-width={2.2} aria-hidden="true" />
         <span>{siteConfig.phoneDisplay}</span>
       </a>
-      <a class="quote-link" href="/contact/">
+      <a class="quote-link" href="/contact/#quote-form">
         Get a free quote
         <ArrowUpRight size={17} stroke-width={2.2} aria-hidden="true" />
       </a>
@@ -48,7 +48,7 @@ const isCurrent = (href: string) => href === '/' ? pathname === '/' : pathname.s
       <a href={siteConfig.phoneHref}><Phone size={17} aria-hidden="true" /> {siteConfig.phoneDisplay}</a>
       <a href={siteConfig.emailHref}><Mail size={17} aria-hidden="true" /> {siteConfig.emailDisplay}</a>
     </div>
-    <a class="button" href="/contact/">Get a free quote</a>
+    <a class="button" href="/contact/#quote-form">Get a free quote</a>
   </div>
 </header>
 
