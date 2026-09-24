@@ -1,5 +1,5 @@
 ---
-import { ArrowRight, Info } from '@lucide/astro';
+import { ArrowRight, Info, Search } from '@lucide/astro';
 ---
 
 <form
@@ -13,7 +13,7 @@ import { ArrowRight, Info } from '@lucide/astro';
   data-quote-form
 >
   <input type="hidden" name="form-name" value="quote-request" />
-  <input type="hidden" name="subject" value="Geli Construction Services — New quote request" />
+  <input type="hidden" name="subject" value="Geli Construction Services — New quote request" data-remove-prefix />
   <p class="honeypot">
     <label>Do not fill this out if you are human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
   </p>
@@ -37,7 +37,25 @@ import { ArrowRight, Info } from '@lucide/astro';
     </div>
     <div class="field">
       <label for="location">Suburb / postcode <span aria-hidden="true">*</span></label>
-      <input id="location" name="location" type="text" autocomplete="postal-code" required aria-describedby="location-error" />
+      <div class="location-input-wrap">
+        <Search size={18} stroke-width={1.8} aria-hidden="true" />
+        <input
+          id="location"
+          name="location"
+          type="text"
+          inputmode="search"
+          autocomplete="off"
+          required
+          role="combobox"
+          aria-autocomplete="list"
+          aria-expanded="false"
+          aria-controls="quote-location-suggestions"
+          aria-describedby="location-error"
+          placeholder="Start typing a Victorian suburb"
+          data-quote-location-input
+        />
+        <ul id="quote-location-suggestions" class="location-suggestions" role="listbox" data-quote-location-suggestions hidden></ul>
+      </div>
       <span class="field-error" id="location-error">Please enter the project suburb or postcode.</span>
     </div>
   </div>
@@ -77,15 +95,25 @@ import { ArrowRight, Info } from '@lucide/astro';
 </form>
 
 <script>
+  import { createLocalityAutocomplete } from '../lib/localities';
+
   const form = document.querySelector<HTMLFormElement>('[data-quote-form]');
   const service = form?.querySelector<HTMLSelectElement>('#service');
   const location = form?.querySelector<HTMLInputElement>('#location');
+  const locationSuggestions = form?.querySelector<HTMLUListElement>('[data-quote-location-suggestions]');
   const parameters = new URLSearchParams(window.location.search);
   const requestedService = parameters.get('service');
   const requestedLocation = parameters.get('location');
 
   if (service && requestedService && Array.from(service.options).some((option) => option.value === requestedService)) service.value = requestedService;
   if (location && requestedLocation) location.value = requestedLocation;
+  if (location && locationSuggestions) {
+    createLocalityAutocomplete({
+      input: location,
+      suggestions: locationSuggestions,
+      optionIdPrefix: 'quote-location-option',
+    });
+  }
 
   form?.addEventListener('submit', () => {
     const button = form.querySelector<HTMLButtonElement>('[data-submit-button]');
@@ -110,10 +138,18 @@ import { ArrowRight, Info } from '@lucide/astro';
   .field input, .field select { height: 3.4rem; min-height: 3.4rem; }
   .field textarea { resize: vertical; }
   .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--brand-primary-strong); outline: none; box-shadow: 0 0 0 3px rgba(252,164,12,.2); }
+  .location-input-wrap { position: relative; z-index: 5; }
+  .location-input-wrap > svg { position: absolute; top: 1.7rem; left: .9rem; z-index: 1; color: var(--brand-primary-strong); pointer-events: none; transform: translateY(-50%); }
+  .location-input-wrap input { padding-left: 2.75rem; }
+  .location-suggestions { position: absolute; top: calc(100% + .35rem); right: 0; left: 0; z-index: 800; max-height: 18rem; overflow-y: auto; border: 1px solid var(--line); margin: 0; padding: .35rem; background: white; box-shadow: var(--shadow); list-style: none; }
+  .location-suggestions[hidden] { display: none; }
+  .location-suggestions li { min-height: 2.75rem; padding: .7rem .75rem; color: var(--muted); font-size: .78rem; cursor: pointer; }
+  .location-suggestions li:hover, .location-suggestions li[aria-selected="true"] { background: var(--brand-light); color: var(--brand-dark); }
   .field-hint { color: var(--muted); font-size: .68rem; }
   .field-error { display: none; color: #9f2f26; font-size: .68rem; font-weight: 650; }
   .field input:user-invalid, .field select:user-invalid, .field textarea:user-invalid { border-color: #9f2f26; }
   .field input:user-invalid ~ .field-error, .field select:user-invalid ~ .field-error, .field textarea:user-invalid ~ .field-error { display: block; }
+  .location-input-wrap:has(input:user-invalid) ~ .field-error { display: block; }
   .photo-note { display: flex; align-items: flex-start; gap: .8rem; padding: 1rem; background: var(--brand-light); }
   .photo-note svg { flex: 0 0 auto; color: var(--brand-primary-strong); }
   .photo-note p { margin: 0; color: var(--muted); font-size: .76rem; }

@@ -77,9 +77,15 @@ import { serviceAreaGroups } from '../config/serviceAreas';
 
 <script>
   import { servicedSuburbNames } from '../config/serviceAreas';
+  import {
+    createLocalityAutocomplete,
+    findExactLocality,
+    getVictorianLocalities,
+    normaliseLocality,
+    titleCaseLocality,
+    type LocalityTuple,
+  } from '../lib/localities';
 
-  type LocalityTuple = [string, string, number, number];
-  type LocalityData = { localities: LocalityTuple[] };
   type MapState = {
     L: typeof import('leaflet');
     map: import('leaflet').Map;
@@ -97,34 +103,16 @@ import { serviceAreaGroups } from '../config/serviceAreas';
   const listPanel = section?.querySelector<HTMLElement>('[data-service-list-panel]');
   const serviced = new Set(servicedSuburbNames.map((name) => name.toLocaleUpperCase('en-AU')));
 
-  let localityPromise: Promise<LocalityTuple[]> | undefined;
   let localities: LocalityTuple[] = [];
-  let filteredSuggestions: LocalityTuple[] = [];
-  let activeSuggestion = -1;
   let mapInstance: MapState | undefined;
 
-  const titleCase = (value: string) => value
-    .toLocaleLowerCase('en-AU')
-    .replace(/(^|[\s/-])([a-z])/g, (_, prefix, letter) => `${prefix}${letter.toLocaleUpperCase('en-AU')}`);
-  const localityLabel = ([suburb, postcode]: LocalityTuple) => `${titleCase(suburb)}, VIC ${postcode}`;
-  const normalise = (value: string) => value.trim().toLocaleUpperCase('en-AU').replace(/\s+/g, ' ');
-  const isCovered = (suburb: string) => serviced.has(normalise(suburb));
-
-  const getLocalities = () => {
-    localityPromise ??= fetch('/data/vic-localities.json')
-      .then((response) => {
-        if (!response.ok) throw new Error('Location list could not be loaded.');
-        return response.json() as Promise<LocalityData>;
-      })
-      .then((data) => data.localities);
-    return localityPromise;
-  };
+  const isCovered = (suburb: string) => serviced.has(normaliseLocality(suburb));
 
   async function initialiseMap(): Promise<MapState | undefined> {
     if (!mapElement) return undefined;
     const leaflet = await import('leaflet');
     const L = (leaflet as unknown as { default: typeof import('leaflet') }).default;
-    const data = localities.length ? localities : await getLocalities();
+    const data = localities.length ? localities : await getVictorianLocalities();
     localities = data;
     const serviceLocalities = data.filter(([suburb]) => isCovered(suburb));
     const map = L.map(mapElement, { attributionControl: true, scrollWheelZoom: false, zoomControl: true });
@@ -139,7 +127,7 @@ import { serviceAreaGroups } from '../config/serviceAreas';
       bounds.extend([latitude, longitude]);
       L.circleMarker([latitude, longitude], {
         color: '#171615', fillColor: '#fca40c', fillOpacity: .86, radius: 4, weight: 1,
-      }).bindTooltip(`${titleCase(suburb)} ${postcode}`, { direction: 'top' }).addTo(map);
+      }).bindTooltip(`${titleCaseLocality(suburb)} ${postcode}`, { direction: 'top' }).addTo(map);
     });
     map.fitBounds(bounds, { padding: [24, 24], maxZoom: 9 });
     mapLoading?.remove();
@@ -160,26 +148,16 @@ import { serviceAreaGroups } from '../config/serviceAreas';
     const observer = new IntersectionObserver((entries) => {
       if (!entries.some((entry) => entry.isIntersecting)) return;
       loadMap();
-      getLocalities().then((data) => { localities = data; }).catch(() => {});
+      getVictorianLocalities().then((data) => { localities = data; }).catch(() => {});
       observer.disconnect();
     }, { rootMargin: '300px' });
     observer.observe(section);
   } else loadMap();
 
-  const closeSuggestions = () => {
-    if (!suggestions || !input) return;
-    suggestions.hidden = true;
-    suggestions.replaceChildren();
-    input.setAttribute('aria-expanded', 'false');
-    input.removeAttribute('aria-activedescendant');
-    filteredSuggestions = [];
-    activeSuggestion = -1;
-  };
-
   const showCoverage = async (locality: LocalityTuple) => {
     if (!result) return;
     const [suburb, postcode, latitude, longitude] = locality;
-    const place = `${titleCase(suburb)} ${postcode}`;
+    const place = `${titleCaseLocality(suburb)} ${postcode}`;
     const covered = isCovered(suburb);
     result.hidden = false;
     result.className = `checker-result ${covered ? 'is-covered' : 'is-outside'}`;
@@ -197,83 +175,28 @@ import { serviceAreaGroups } from '../config/serviceAreas';
     instance.map.flyTo([latitude, longitude], covered ? 11 : 9, { animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches, duration: 1 });
   };
 
-  const chooseLocality = (locality: LocalityTuple) => {
-    if (!input) return;
-    input.value = localityLabel(locality);
-    input.dataset.selectedLocality = `${locality[0]}|${locality[1]}`;
-    closeSuggestions();
-    showCoverage(locality);
-  };
-
-  const renderSuggestions = (matches: LocalityTuple[]) => {
-    if (!suggestions || !input) return;
-    suggestions.replaceChildren();
-    filteredSuggestions = matches;
-    activeSuggestion = -1;
-    matches.forEach((locality, index) => {
-      const option = document.createElement('li');
-      option.id = `suburb-option-${index}`;
-      option.role = 'option';
-      option.textContent = localityLabel(locality);
-      option.addEventListener('pointerdown', (event) => { event.preventDefault(); chooseLocality(locality); });
-      suggestions.append(option);
-    });
-    suggestions.hidden = matches.length === 0;
-    input.setAttribute('aria-expanded', String(matches.length > 0));
-  };
-
-  const findMatches = (query: string) => {
-    const value = normalise(query).replace(/,? VIC(?:TORIA)?(?: \d{4})?$/, '');
-    if (value.length < 2) return [];
-    const postcodeQuery = /^\d/.test(value);
-    return localities
-      .filter(([suburb, postcode]) => postcodeQuery ? postcode.startsWith(value) : suburb.startsWith(value))
-      .slice(0, 8);
-  };
+  const autocomplete = input && suggestions
+    ? createLocalityAutocomplete({
+      input,
+      suggestions,
+      optionIdPrefix: 'suburb-option',
+      onSelect: showCoverage,
+    })
+    : undefined;
 
   const checkCurrentValue = () => {
     if (!input || !result) return;
-    const selectedKey = input.dataset.selectedLocality;
-    const entered = normalise(input.value);
-    const exact = localities.find(([suburb, postcode]) =>
-      `${suburb}|${postcode}` === selectedKey
-      || entered === suburb
-      || entered === postcode
-      || entered === normalise(localityLabel([suburb, postcode, 0, 0]))
-      || entered === `${suburb} ${postcode}`
-    );
-    if (exact) return chooseLocality(exact);
+    const exact = findExactLocality(localities, input.value, input.dataset.selectedLocality);
+    if (exact) return autocomplete?.select(exact);
     result.hidden = false;
     result.className = 'checker-result is-unknown';
     result.innerHTML = '<strong>We could not match that location.</strong><span>Choose a suggestion, or try a Victorian suburb name or four-digit postcode.</span>';
   };
 
   toggle?.addEventListener('click', async () => {
-    if (!localities.length) localities = await getLocalities().catch(() => []);
+    if (!localities.length) localities = await getVictorianLocalities().catch(() => []);
     checkCurrentValue();
   });
-  input?.addEventListener('focus', async () => { if (!localities.length) localities = await getLocalities().catch(() => []); });
-  input?.addEventListener('input', async () => {
-    if (!localities.length) localities = await getLocalities().catch(() => []);
-    delete input.dataset.selectedLocality;
-    renderSuggestions(findMatches(input.value));
-  });
-  input?.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      if (activeSuggestion >= 0) chooseLocality(filteredSuggestions[activeSuggestion]); else checkCurrentValue();
-      return;
-    }
-    if (event.key === 'Escape') return closeSuggestions();
-    if (!filteredSuggestions.length || !suggestions || !['ArrowDown', 'ArrowUp'].includes(event.key)) return;
-    event.preventDefault();
-    activeSuggestion = event.key === 'ArrowDown'
-      ? (activeSuggestion + 1) % filteredSuggestions.length
-      : (activeSuggestion - 1 + filteredSuggestions.length) % filteredSuggestions.length;
-    Array.from(suggestions.children).forEach((option, index) => option.setAttribute('aria-selected', String(index === activeSuggestion)));
-    input.setAttribute('aria-activedescendant', `suburb-option-${activeSuggestion}`);
-  });
-  input?.addEventListener('blur', () => window.setTimeout(closeSuggestions, 140));
 
   listToggle?.addEventListener('click', () => {
     if (!listPanel || !listToggle) return;

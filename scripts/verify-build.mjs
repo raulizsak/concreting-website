@@ -45,8 +45,11 @@ const formChecks = {
   namedForm: /name="quote-request"/.test(contactHtml),
   netlifyDetection: /data-netlify="true"/.test(contactHtml),
   formNameField: /name="form-name" value="quote-request"/.test(contactHtml),
+  professionalSubject: /name="subject" value="Geli Construction Services — New quote request" data-remove-prefix/.test(contactHtml),
   honeypot: /netlify-honeypot="bot-field"/.test(contactHtml) && /name="bot-field"/.test(contactHtml),
   successAction: /action="\/thanks\/"/.test(contactHtml),
+  locationAutocomplete: /id="location"[\s\S]*?role="combobox"[\s\S]*?aria-controls="quote-location-suggestions"/.test(contactHtml)
+    && /id="quote-location-suggestions"[\s\S]*?role="listbox"/.test(contactHtml),
   realServices: [
     'concreting', 'excavation', 'stonework-outdoor-tiling', 'outdoor-finishing',
     'irrigation-drainage', 'retaining-walls', 'multiple-services', 'other',
