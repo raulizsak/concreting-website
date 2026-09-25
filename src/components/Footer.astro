@@ -8,7 +8,7 @@ import { siteConfig } from '../config/site';
   <div class="footer-main container">
     <div class="footer-brand">
       <a href="/" class="footer-logo" aria-label={`${siteConfig.businessName} home`}>
-        <img src="/logo/geli-construction-services-logo.webp" width="720" height="720" alt="" loading="lazy" />
+        <img src="/logo/geli-construction-services-logo-160.webp" width="160" height="160" alt="Geli Construction Services logo" loading="lazy" />
         <span>{siteConfig.businessName}</span>
       </a>
       <p>Concreting and outdoor construction across selected areas of South-East Melbourne, the Dandenong Ranges, Gippsland, Bass Coast, South Gippsland and the Latrobe Valley.</p>
@@ -22,18 +22,20 @@ import { siteConfig } from '../config/site';
         <p class="footer-label">Navigate</p>
         <nav aria-label="Footer navigation">
           {siteConfig.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+          <a href="/areas-we-service/">Areas We Service</a>
           <a href="/privacy/">Privacy Policy</a>
         </nav>
       </div>
       <div>
         <p class="footer-label">Services</p>
         <nav aria-label="Services navigation">
-          {siteConfig.services.map((service) => <a href={`/services/#${service.slug}`}>{service.name}</a>)}
+          {siteConfig.services.map((service) => <a href={`/services/${service.slug}/`}>{service.name}</a>)}
         </nav>
       </div>
       <div>
         <p class="footer-label">Service area</p>
         <p>{siteConfig.serviceArea}</p>
+        <a href="/areas-we-service/">View all service areas</a>
         <a class="footer-quote" href="/contact/#quote-form">Request a quote <ArrowUpRight size={17} aria-hidden="true" /></a>
       </div>
     </div>

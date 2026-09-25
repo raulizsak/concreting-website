@@ -85,6 +85,59 @@ const projectSlugs = [
   'backyard-side-access-concreting',
 ];
 const missingProjectRoutes = projectSlugs.filter((slug) => !existsSync(join(dist, 'projects', slug, 'index.html')));
+const expectedIndexableRoutes = [
+  '/',
+  '/services/',
+  '/services/concreting/',
+  '/services/excavation/',
+  '/services/stonework-outdoor-tiling/',
+  '/services/outdoor-finishing-landscaping/',
+  '/services/irrigation-drainage/',
+  '/services/retaining-walls/',
+  '/services/concreting/concrete-driveways/',
+  '/services/concreting/concrete-slabs/',
+  '/services/concreting/paths-side-access/',
+  '/projects/',
+  ...projectSlugs.map((slug) => `/projects/${slug}/`),
+  '/areas-we-service/',
+  '/areas-we-service/pakenham/',
+  '/about/',
+  '/contact/',
+];
+const outputForRoute = (route) => {
+  if (route === '/') return join(dist, 'index.html');
+  if (route === '/404/') return join(dist, '404.html');
+  return join(dist, ...route.split('/').filter(Boolean), 'index.html');
+};
+const missingIndexableRoutes = expectedIndexableRoutes.filter((route) => !existsSync(outputForRoute(route)));
+const metadataByRoute = expectedIndexableRoutes
+  .filter((route) => existsSync(outputForRoute(route)))
+  .map((route) => {
+    const html = readFileSync(outputForRoute(route), 'utf8');
+    const title = html.match(/<title>([^<]+)<\/title>/i)?.[1] ?? '';
+    const description = html.match(/<meta name="description" content="([^"]+)"/i)?.[1] ?? '';
+    const canonical = html.match(/<link rel="canonical" href="([^"]+)"/i)?.[1] ?? '';
+    const h1Count = (html.match(/<h1\b/gi) ?? []).length;
+    return { route, title, description, canonical, h1Count, noindex: /name="robots" content="[^"]*noindex/i.test(html) };
+  });
+const duplicateTitles = metadataByRoute
+  .filter((entry, index, entries) => entries.findIndex((candidate) => candidate.title === entry.title) !== index)
+  .map((entry) => ({ route: entry.route, title: entry.title }));
+const duplicateDescriptions = metadataByRoute
+  .filter((entry, index, entries) => entries.findIndex((candidate) => candidate.description === entry.description) !== index)
+  .map((entry) => ({ route: entry.route, description: entry.description }));
+const invalidMetadata = metadataByRoute.filter((entry) => (
+  !entry.title
+  || !entry.description
+  || entry.canonical !== `https://geliconstructionservices.com.au${entry.route}`
+  || entry.h1Count !== 1
+  || entry.noindex
+));
+const intentionalNoindexRoutes = ['/privacy/', '/thanks/', '/404/'];
+const missingNoindex = intentionalNoindexRoutes.filter((route) => {
+  const file = outputForRoute(route);
+  return !existsSync(file) || !/name="robots" content="noindex,follow"/i.test(readFileSync(file, 'utf8'));
+});
 const expectedProjectImages = 114;
 const projectImageDirectory = join(dist, 'images', 'projects');
 const projectImageCount = existsSync(projectImageDirectory) ? walk(projectImageDirectory).filter((file) => /\.(?:avif|webp)$/i.test(file)).length : 0;
@@ -114,9 +167,16 @@ const cardiniaLocalityValid = JSON.stringify(cardiniaLocality) === JSON.stringif
 const serviceAreaConfig = readFileSync(join(root, 'src', 'config', 'serviceAreas.ts'), 'utf8');
 const cardiniaConfigured = /name: 'Cardinia \/ Gippsland'[\s\S]*?suburbs:\s*\[[\s\S]*?'Cardinia'/.test(serviceAreaConfig);
 const robots = readFileSync(join(dist, 'robots.txt'), 'utf8');
-const sitemapUsesProductionDomain = walk(dist)
-  .filter((file) => /sitemap.*\.xml$/i.test(file))
-  .every((file) => !readFileSync(file, 'utf8').includes('concreting-website.netlify.app'));
+const sitemapFile = join(dist, 'sitemap.xml');
+const sitemapXml = existsSync(sitemapFile) ? readFileSync(sitemapFile, 'utf8') : '';
+const sitemapUrls = Array.from(sitemapXml.matchAll(/<loc>([^<]+)<\/loc>/g), (match) => match[1])
+  .filter((url) => !/\/images\//.test(url));
+const expectedSitemapUrls = expectedIndexableRoutes.map((route) => `https://geliconstructionservices.com.au${route}`);
+const missingSitemapUrls = expectedSitemapUrls.filter((url) => !sitemapUrls.includes(url));
+const unexpectedSitemapUrls = sitemapUrls.filter((url) => !expectedSitemapUrls.includes(url));
+const sitemapUsesProductionDomain = sitemapXml.length > 0
+  && !sitemapXml.includes('concreting-website.netlify.app')
+  && sitemapUrls.every((url) => url.startsWith('https://geliconstructionservices.com.au/'));
 
 const failedFormChecks = Object.entries(formChecks).filter(([, passed]) => !passed).map(([name]) => name);
 const report = {
@@ -127,6 +187,12 @@ const report = {
   missingRenderedValues,
   foundForbiddenValues,
   missingProjectRoutes,
+  missingIndexableRoutes,
+  metadataByRoute,
+  duplicateTitles,
+  duplicateDescriptions,
+  invalidMetadata,
+  missingNoindex,
   projectImageCount,
   expectedProjectImages,
   serviceImageCount,
@@ -139,8 +205,11 @@ const report = {
   cardiniaLocality,
   cardiniaLocalityValid,
   cardiniaConfigured,
-  robotsUsesProductionDomain: robots.includes('https://geliconstructionservices.com.au/sitemap-index.xml'),
+  robotsUsesProductionDomain: robots.includes('https://geliconstructionservices.com.au/sitemap.xml'),
   sitemapUsesProductionDomain,
+  sitemapUrlCount: sitemapUrls.length,
+  missingSitemapUrls,
+  unexpectedSitemapUrls,
 };
 console.log(JSON.stringify(report, null, 2));
 
@@ -150,6 +219,11 @@ if (
   || missingRenderedValues.length
   || foundForbiddenValues.length
   || missingProjectRoutes.length
+  || missingIndexableRoutes.length
+  || duplicateTitles.length
+  || duplicateDescriptions.length
+  || invalidMetadata.length
+  || missingNoindex.length
   || projectImageCount !== expectedProjectImages
   || serviceImageCount !== expectedServiceImages
   || !serviceImagesUseApprovedMappings
@@ -161,4 +235,6 @@ if (
   || !cardiniaConfigured
   || !report.robotsUsesProductionDomain
   || !sitemapUsesProductionDomain
+  || missingSitemapUrls.length
+  || unexpectedSitemapUrls.length
 ) process.exitCode = 1;

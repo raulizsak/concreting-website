@@ -8,6 +8,7 @@ import SectionCta from '../components/SectionCta.astro';
 import ServiceAreaChecker from '../components/ServiceAreaChecker.astro';
 import SocialLinks from '../components/SocialLinks.astro';
 import { siteConfig } from '../config/site';
+import { organizationStructuredData, websiteStructuredData } from '../lib/structuredData';
 
 const projects = (await getCollection('projects'))
   .filter((project) => project.data.featured)
@@ -34,8 +35,9 @@ const reasons = [
 ---
 
 <BaseLayout
-  title="Geli Construction Services | Concreting & Outdoor Construction"
-  description="Concreting, excavation, stonework, retaining walls, drainage and outdoor finishing across South-East Melbourne, Gippsland and surrounding service areas."
+  title="Concreting & Outdoor Construction Pakenham | Geli Construction Services"
+  description="Geli Construction Services provides concreting, excavation, retaining walls and outdoor construction in Pakenham and across South East Melbourne."
+  structuredData={[organizationStructuredData, websiteStructuredData]}
 >
   <section class="hero">
     <ResponsiveImage
@@ -103,7 +105,7 @@ const reasons = [
               <div class="service-card-copy">
                 <h3>{service.name}</h3>
                 <p>{service.summary}</p>
-                <a href={`/services/#${service.slug}`} aria-label={`Learn about ${service.name}`}>View service <ArrowUpRight size={17} aria-hidden="true" /></a>
+                <a href={`/services/${service.slug}/`} aria-label={`Learn about ${service.name}`}>View service <ArrowUpRight size={17} aria-hidden="true" /></a>
               </div>
             </article>
           );

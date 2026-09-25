@@ -5,11 +5,16 @@ import PageHero from '../../components/PageHero.astro';
 import QuoteForm from '../../components/QuoteForm.astro';
 import SocialLinks from '../../components/SocialLinks.astro';
 import { siteConfig } from '../../config/site';
+import { breadcrumbStructuredData } from '../../lib/structuredData';
 ---
 
 <BaseLayout
-  title="Contact & Free Quote | Geli Construction Services"
-  description="Contact Geli Construction Services or request a free quote for concreting and outdoor construction work across South-East Melbourne, Gippsland and surrounding service areas."
+  title="Request a Quote | Geli Construction Services Pakenham"
+  description="Contact Geli Construction Services for a concreting or outdoor construction quote in Pakenham, South East Melbourne, Gippsland and surrounding areas."
+  structuredData={breadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Contact', path: '/contact/' },
+  ])}
 >
   <PageHero
     eyebrow="Contact"

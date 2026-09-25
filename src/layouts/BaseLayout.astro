@@ -6,7 +6,6 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import RevealObserver from '../components/RevealObserver.astro';
 import { siteConfig } from '../config/site';
-import { servicedSuburbNames } from '../config/serviceAreas';
 
 interface Props {
   title: string;
@@ -14,6 +13,8 @@ interface Props {
   image?: string;
   imageAlt?: string;
   noindex?: boolean;
+  ogType?: 'website' | 'article';
+  structuredData?: object | object[];
 }
 
 const {
@@ -22,27 +23,12 @@ const {
   image = '/og.png',
   imageAlt = 'Geli Construction Services — Concreting and Outdoor Construction',
   noindex = false,
+  ogType = 'website',
+  structuredData = [],
 } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const socialImage = new URL(image, Astro.site);
-const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'HomeAndConstructionBusiness',
-  name: siteConfig.businessName,
-  url: siteConfig.domain,
-  telephone: '+61494802784',
-  email: siteConfig.emailDisplay,
-  taxID: `ABN ${siteConfig.abn}`,
-  logo: `${siteConfig.domain}/logo/geli-construction-services-logo.jpeg`,
-  image: `${siteConfig.domain}/og.png`,
-  description: siteConfig.description,
-  sameAs: Object.values(siteConfig.socials),
-  areaServed: servicedSuburbNames.map((name) => ({ '@type': 'City', name })),
-  makesOffer: siteConfig.services.map((service) => ({
-    '@type': 'Offer',
-    itemOffered: { '@type': 'Service', name: service.name, description: service.summary },
-  })),
-};
+const structuredDataItems = Array.isArray(structuredData) ? structuredData : [structuredData];
 ---
 
 <!doctype html>
@@ -57,7 +43,7 @@ const structuredData = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="shortcut icon" href="/favicon.ico" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="en_AU" />
     <meta property="og:site_name" content={siteConfig.businessName} />
     <meta property="og:title" content={title} />
@@ -69,8 +55,8 @@ const structuredData = {
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+    {structuredDataItems.map((item) => <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />)}
     <title>{title}</title>
   </head>
   <body>

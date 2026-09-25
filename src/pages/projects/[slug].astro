@@ -4,6 +4,8 @@ import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ResponsiveImage from '../../components/ResponsiveImage.astro';
 import SectionCta from '../../components/SectionCta.astro';
+import { siteConfig } from '../../config/site';
+import { breadcrumbStructuredData } from '../../lib/structuredData';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects')).sort((a, b) => b.data.order - a.data.order);
@@ -22,6 +24,9 @@ interface Props {
 const { project, previous, next } = Astro.props;
 const { Content } = await render(project);
 const gallery = project.data.gallery;
+const relatedServices = project.data.categories
+  .map((category) => siteConfig.services.find((service) => service.filter === category))
+  .filter((service): service is (typeof siteConfig.services)[number] => Boolean(service));
 ---
 
 <BaseLayout
@@ -29,11 +34,20 @@ const gallery = project.data.gallery;
   description={project.data.summary}
   image={`${project.data.coverImage}-1200.webp`}
   imageAlt={project.data.coverAlt}
+  ogType="article"
+  structuredData={breadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Projects', path: '/projects/' },
+    { name: project.data.title, path: `/projects/${project.data.slug}/` },
+  ])}
 >
   <article>
     <header class="project-hero">
       <div class="container project-hero-inner" data-reveal>
-        <p class="project-category">{project.data.categories.join(' · ')}</p>
+        <nav class="project-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/projects/">Projects</a><span>/</span><span aria-current="page">{project.data.title}</span></nav>
+        <p class="project-category">
+          {relatedServices.map((service, index) => <>{index > 0 && ' · '}<a href={`/services/${service.slug}/`}>{service.name}</a></>)}
+        </p>
         <h1 class="display">{project.data.title}</h1>
         <div class="project-intro">
           <p>{project.data.summary}</p>
@@ -144,6 +158,9 @@ const gallery = project.data.gallery;
 <style>
   .project-hero { padding: clamp(10rem, 18vw, 14rem) 0 clamp(3.5rem, 7vw, 6rem); background: var(--brand-dark); color: white; }
   .project-category { margin: 0 0 .75rem; color: var(--brand-primary); font-family: "Archivo Variable", sans-serif; font-size: .72rem; font-weight: 720; letter-spacing: .12em; text-transform: uppercase; }
+  .project-category a:hover { color: white; }
+  .project-breadcrumb { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 2rem; color: rgba(255,255,255,.62); font-size: .66rem; }
+  .project-breadcrumb a:hover { color: var(--brand-primary); }
   .project-hero .display { max-width: 14ch; overflow-wrap: break-word; font-size: clamp(2.55rem, 8vw, 7.5rem); }
   .project-intro { display: flex; flex-direction: column; gap: 1rem; max-width: 52rem; margin-top: 2rem; }
   .project-intro > p:first-child { margin: 0; color: rgba(255,255,255,.72); font-size: clamp(1rem, 2vw, 1.2rem); }

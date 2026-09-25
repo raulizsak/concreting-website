@@ -1,12 +1,12 @@
 ---
-import { HardHat, MessageSquareText, ShieldCheck, Shovel } from '@lucide/astro';
+import { HardHat, MapPin, MessageSquareText, ShieldCheck, Shovel } from '@lucide/astro';
 
 interface Props {
   eyebrow: string;
   title: string;
   intro: string;
   compact?: boolean;
-  visual: 'services' | 'projects' | 'about' | 'contact' | 'privacy';
+  visual: 'services' | 'projects' | 'about' | 'contact' | 'privacy' | 'areas';
 }
 
 const { eyebrow, title, intro, compact = false, visual } = Astro.props;
@@ -15,6 +15,7 @@ const iconMap = {
   about: HardHat,
   contact: MessageSquareText,
   privacy: ShieldCheck,
+  areas: MapPin,
 } as const;
 const Icon = visual === 'projects' ? null : iconMap[visual];
 ---

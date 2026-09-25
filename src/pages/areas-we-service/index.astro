@@ -1,0 +1,123 @@
+---
+import { ArrowRight, MapPin } from '@lucide/astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionCta from '../../components/SectionCta.astro';
+import { serviceAreaGroups } from '../../config/serviceAreas';
+import { siteConfig } from '../../config/site';
+import { breadcrumbStructuredData } from '../../lib/structuredData';
+
+const groupId = (name: string) => name.toLocaleLowerCase('en-AU').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+---
+
+<BaseLayout
+  title="Areas We Service | Geli Construction Services Pakenham"
+  description="See where Geli Construction Services provides concreting and outdoor construction across Pakenham, South East Melbourne, Gippsland and surrounding areas."
+  structuredData={breadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Areas We Service', path: '/areas-we-service/' },
+  ])}
+>
+  <PageHero
+    eyebrow="Areas We Service"
+    title="Concreting & outdoor construction across our service area"
+    intro="Geli Construction Services is based in Pakenham and works across selected suburbs of South East Melbourne, the Dandenong Ranges, Gippsland, Bass Coast, South Gippsland and the Latrobe Valley."
+    visual="areas"
+    compact
+  />
+
+  <nav class="breadcrumb-bar" aria-label="Breadcrumb">
+    <div class="container"><a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">Areas We Service</span></div>
+  </nav>
+
+  <section class="section area-intro">
+    <div class="container intro-grid">
+      <div data-reveal>
+        <p class="eyebrow">Local service area</p>
+        <h2 class="display">Start with your suburb and the work you need</h2>
+      </div>
+      <div class="intro-copy" data-reveal>
+        <p>Geli provides concreting, excavation, stonework and outdoor tiling, outdoor finishing, irrigation and drainage, and retaining wall construction across the listed service locations.</p>
+        <p>This page is the shared source for the locations Geli usually services. Availability still depends on the project and current travel schedule, so send through the site location and job details for confirmation.</p>
+        <a class="button" href="/contact/#quote-form">Check your project location <ArrowRight size={18} aria-hidden="true" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pakenham-feature">
+    <div class="container feature-card" data-reveal>
+      <div><p class="eyebrow">Primary operating area</p><h2 class="display">Pakenham</h2></div>
+      <div>
+        <p>Geli Construction Services is based in Pakenham. Explore the services available locally, genuine project examples and nearby listed service locations.</p>
+        <a class="text-link" href="/areas-we-service/pakenham/">Concreting and outdoor services in Pakenham <ArrowRight size={18} aria-hidden="true" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section services-links">
+    <div class="container">
+      <div class="section-heading" data-reveal><p class="eyebrow">What we do</p><h2 class="display">Services available across listed areas</h2></div>
+      <div class="service-link-grid">
+        {siteConfig.services.map((service) => (
+          <a href={`/services/${service.slug}/`} data-reveal>
+            <span>{service.name}</span><ArrowRight size={18} aria-hidden="true" />
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section locations-section">
+    <div class="container">
+      <div class="section-heading" data-reveal>
+        <p class="eyebrow">Usual service locations</p>
+        <h2 class="display">Confirmed suburbs and regions</h2>
+        <p>The following list is maintained from the same service-area data used by the website’s suburb checker.</p>
+      </div>
+      <div class="location-groups">
+        {serviceAreaGroups.map((group) => (
+          <section id={groupId(group.name)} data-reveal>
+            <div class="group-heading"><MapPin size={21} aria-hidden="true" /><h3>{group.name}</h3></div>
+            <ul>{group.suburbs.map((suburb) => <li>{suburb}</li>)}</ul>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <SectionCta title="Is your suburb on the list?" copy="Tell us where the project is and what you are planning. Geli will confirm travel and job availability when discussing your quote." />
+</BaseLayout>
+
+<style>
+  .breadcrumb-bar { border-bottom: 1px solid var(--line); background: var(--paper); }
+  .breadcrumb-bar .container { display: flex; gap: .45rem; padding-block: .85rem; color: var(--muted); font-size: .68rem; }
+  .breadcrumb-bar a:hover { color: var(--brand-primary-strong); }
+  .area-intro { background: var(--paper); }
+  .intro-grid { display: grid; gap: clamp(2rem, 7vw, 7rem); }
+  .intro-grid .display, .section-heading .display { max-width: 14ch; font-size: clamp(2.7rem, 5.8vw, 5.5rem); }
+  .intro-copy p { margin: 0 0 1rem; color: var(--muted); }
+  .intro-copy .button { margin-top: 1rem; }
+  .pakenham-feature { background: var(--brand-primary); }
+  .feature-card { display: grid; align-items: end; gap: 2rem; }
+  .feature-card .eyebrow { color: var(--brand-dark); }
+  .feature-card .display { font-size: clamp(3rem, 8vw, 7rem); }
+  .feature-card p { max-width: 43rem; }
+  .text-link { display: inline-flex; align-items: center; gap: .45rem; font-size: .72rem; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
+  .services-links { background: var(--brand-light); }
+  .section-heading { max-width: 58rem; margin-bottom: 2.5rem; }
+  .section-heading > p:last-child { color: var(--muted); }
+  .service-link-grid { display: grid; gap: .75rem; }
+  .service-link-grid a { display: flex; min-height: 4.5rem; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--line); padding: 1rem 1.25rem; background: var(--paper); font-family: "Archivo Variable", sans-serif; font-size: .86rem; font-weight: 720; text-transform: uppercase; }
+  .service-link-grid a:hover { border-color: var(--brand-primary-strong); color: var(--brand-primary-strong); }
+  .locations-section { background: var(--paper); }
+  .location-groups { display: grid; gap: 1rem; }
+  .location-groups > section { scroll-margin-top: 2rem; border-top: 3px solid var(--brand-primary); padding: 1.5rem; background: var(--brand-light); }
+  .group-heading { display: flex; align-items: center; gap: .65rem; }
+  .group-heading svg { color: var(--brand-primary-strong); }
+  .group-heading h3 { margin: 0; font-family: "Archivo Variable", sans-serif; font-size: 1.15rem; text-transform: uppercase; }
+  .location-groups ul { columns: 2; gap: 1.5rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
+  .location-groups li { break-inside: avoid; margin-bottom: .4rem; color: var(--muted); font-size: .76rem; }
+  @media (min-width: 48rem) { .service-link-grid, .location-groups { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 64rem) { .intro-grid, .feature-card { grid-template-columns: .8fr 1.2fr; } }
+  @media (max-width: 30rem) { .location-groups ul { columns: 1; } }
+</style>

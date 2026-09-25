@@ -4,14 +4,19 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import SectionCta from '../../components/SectionCta.astro';
+import { breadcrumbStructuredData } from '../../lib/structuredData';
 
 const projects = (await getCollection('projects')).sort((a, b) => b.data.order - a.data.order);
 const filters = ['All', 'Concreting', 'Excavation', 'Stonework & Outdoor Tiling', 'Outdoor Finishing & Landscaping', 'Irrigation & Drainage', 'Retaining Walls'];
 ---
 
 <BaseLayout
-  title="Projects | Geli Construction Services"
-  description="View genuine concreting projects completed by Geli Construction Services, including driveway, slab, backyard and side access work."
+  title="Concrete Project Gallery | Geli Construction Services"
+  description="View genuine Geli Construction Services projects, including residential concrete driveways, outdoor slabs, backyard areas and side access work."
+  structuredData={breadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Projects', path: '/projects/' },
+  ])}
 >
   <PageHero
     eyebrow="Projects"

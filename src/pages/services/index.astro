@@ -5,13 +5,18 @@ import PageHero from '../../components/PageHero.astro';
 import ResponsiveImage from '../../components/ResponsiveImage.astro';
 import SectionCta from '../../components/SectionCta.astro';
 import { siteConfig } from '../../config/site';
+import { breadcrumbStructuredData } from '../../lib/structuredData';
 
 const serviceIcons = [Layers, Shovel, PanelsTopLeft, Sprout, Droplets, BrickWall];
 ---
 
 <BaseLayout
-  title="Services | Geli Construction Services"
-  description="Explore concreting, excavation, stonework, outdoor tiling, retaining walls, irrigation, drainage and outdoor finishing services from Geli Construction Services."
+  title="Concreting & Outdoor Services Pakenham | Geli Construction Services"
+  description="Explore concreting, excavation, stonework, retaining walls, drainage and outdoor finishing services in Pakenham and across South East Melbourne."
+  structuredData={breadcrumbStructuredData([
+    { name: 'Home', path: '/' },
+    { name: 'Services', path: '/services/' },
+  ])}
 >
   <PageHero
     eyebrow="Services"
@@ -46,7 +51,10 @@ const serviceIcons = [Layers, Shovel, PanelsTopLeft, Sprout, Droplets, BrickWall
               <ul>
                 {service.examples.map((example) => <li><Check size={17} stroke-width={2} aria-hidden="true" /> {example}</li>)}
               </ul>
-              <a class="button" href={`/contact/?service=${service.slug}#quote-form`}>{service.cta} <ArrowRight size={18} aria-hidden="true" /></a>
+              <div class="service-actions">
+                <a class="service-detail-link" href={`/services/${service.slug}/`}>View {service.shortName} details <ArrowRight size={18} aria-hidden="true" /></a>
+                <a class="button" href={`/contact/?service=${service.formValue}#quote-form`}>{service.cta} <ArrowRight size={18} aria-hidden="true" /></a>
+              </div>
             </div>
           </article>
         );
@@ -78,6 +86,8 @@ const serviceIcons = [Layers, Shovel, PanelsTopLeft, Sprout, Droplets, BrickWall
   .service-content ul { display: grid; gap: .6rem; margin: 1.5rem 0 2rem; padding: 0; list-style: none; }
   .service-content li { display: flex; align-items: center; gap: .7rem; color: var(--muted); font-size: .86rem; }
   .service-content li svg { flex: 0 0 auto; color: var(--brand-primary-strong); }
+  .service-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+  .service-detail-link { display: inline-flex; align-items: center; gap: .45rem; color: var(--brand-primary-strong); font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
   @media (min-width: 64rem) { .service-row { grid-template-columns: 1fr 1fr; } .service-row--reverse .service-media { order: 2; } .service-row--reverse .service-content { order: 1; } }
   @media (prefers-reduced-motion: reduce) { .service-media :global(img) { transition: none; } }
 </style>

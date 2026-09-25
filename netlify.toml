@@ -5,6 +5,24 @@
 [build.environment]
   NODE_VERSION = "22.12.0"
 
+[[redirects]]
+  from = "http://geliconstructionservices.com.au/*"
+  to = "https://geliconstructionservices.com.au/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.geliconstructionservices.com.au/*"
+  to = "https://geliconstructionservices.com.au/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.geliconstructionservices.com.au/*"
+  to = "https://geliconstructionservices.com.au/:splat"
+  status = 301
+  force = true
+
 [[headers]]
   for = "/*"
   [headers.values]

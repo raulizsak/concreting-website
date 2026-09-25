@@ -25,6 +25,7 @@ import { serviceAreaGroups } from '../config/serviceAreas';
       <h2 class="display">Check if we service your suburb.</h2>
       <p class="area-lead">Our usual service area covers selected suburbs across South-East Melbourne, the Dandenong Ranges, Gippsland, Bass Coast, South Gippsland and the Latrobe Valley.</p>
       <p class="area-support">Start typing your suburb or postcode. If your location is outside our usual area, send us the project details anyway and we'll let you know if travel is possible.</p>
+      <a class="area-hub-link" href="/areas-we-service/">Explore all areas we service <ArrowRight size={17} aria-hidden="true" /></a>
 
       <div class="location-checker" data-location-checker>
         <div class="checker-row">
@@ -230,6 +231,7 @@ import { serviceAreaGroups } from '../config/serviceAreas';
   .area-copy .display { max-width: 13ch; font-size: clamp(2.8rem, 5.6vw, 5.2rem); }
   .area-lead { margin: 1.25rem 0 0; font-size: clamp(1rem, 2vw, 1.2rem); }
   .area-support { max-width: 40rem; margin: .75rem 0 0; color: var(--muted); font-size: .86rem; }
+  .area-hub-link { display: inline-flex; align-items: center; gap: .45rem; margin-top: 1rem; color: var(--brand-primary-strong); font-size: .7rem; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
   .location-checker { margin-top: 1.7rem; }
   .checker-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .75rem; }
   .location-field { min-width: 0; }
