@@ -2,7 +2,7 @@
 import { ArrowLeft, ArrowRight, Expand, X } from '@lucide/astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ResponsiveImage from '../../components/ResponsiveImage.astro';
+import AdaptiveProjectImage from '../../components/AdaptiveProjectImage.astro';
 import SectionCta from '../../components/SectionCta.astro';
 import { siteConfig } from '../../config/site';
 import { breadcrumbStructuredData } from '../../lib/structuredData';
@@ -57,7 +57,7 @@ const relatedServices = project.data.categories
     </header>
 
     <div class="project-cover container" data-reveal>
-      <ResponsiveImage
+      <AdaptiveProjectImage
         src={project.data.coverImage}
         alt={project.data.coverAlt}
         width={project.data.coverWidth}
@@ -83,8 +83,8 @@ const relatedServices = project.data.categories
         </div>
         <div class="gallery-grid">
           {gallery.map((item, index) => (
-            <button class="gallery-item" type="button" data-gallery-index={index} data-image={`${item.image}-1200.webp`} data-alt={item.alt} aria-label={`Open image ${index + 1} of ${gallery.length}: ${item.alt}`} data-reveal>
-              <ResponsiveImage src={item.image} alt={item.alt} width={item.width} height={item.height} sizes="(min-width: 768px) 50vw, 100vw" />
+            <button class="gallery-item" type="button" data-gallery-index={index} data-image={`${item.image}-1200.webp`} data-alt={item.alt} data-contained={String(item.width <= item.height)} aria-label={`Open image ${index + 1} of ${gallery.length}: ${item.alt}`} data-reveal>
+              <AdaptiveProjectImage src={item.image} alt={item.alt} width={item.width} height={item.height} sizes="(min-width: 768px) 50vw, 100vw" />
               <span><Expand size={18} aria-hidden="true" /> View image</span>
             </button>
           ))}
@@ -113,7 +113,10 @@ const relatedServices = project.data.categories
   <dialog class="lightbox" data-lightbox aria-label="Project image viewer">
     <div class="lightbox-inner">
       <button class="lightbox-close" type="button" aria-label="Close image viewer"><X size={24} aria-hidden="true" /></button>
-      <img src="" alt="" width="1200" height="900" />
+      <div class="lightbox-stage" data-lightbox-stage>
+        <img class="lightbox-backdrop" alt="" aria-hidden="true" hidden />
+        <img class="lightbox-image" alt="" width="1200" height="900" />
+      </div>
       <div class="lightbox-controls">
         <button type="button" data-lightbox-prev><ArrowLeft size={18} aria-hidden="true" /> Previous</button>
         <p aria-live="polite"></p>
@@ -128,7 +131,9 @@ const relatedServices = project.data.categories
 <script>
   const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
   const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-gallery-index]'));
-  const image = dialog?.querySelector<HTMLImageElement>('img');
+  const stage = dialog?.querySelector<HTMLElement>('[data-lightbox-stage]');
+  const image = dialog?.querySelector<HTMLImageElement>('.lightbox-image');
+  const backdrop = dialog?.querySelector<HTMLImageElement>('.lightbox-backdrop');
   const count = dialog?.querySelector<HTMLParagraphElement>('.lightbox-controls p');
   let activeIndex = 0;
 
@@ -138,6 +143,12 @@ const relatedServices = project.data.categories
     const trigger = triggers[activeIndex];
     image.src = trigger.dataset.image ?? '';
     image.alt = trigger.dataset.alt ?? '';
+    const contained = trigger.dataset.contained === 'true';
+    stage?.classList.toggle('lightbox-stage--contained', contained);
+    if (backdrop) {
+      backdrop.hidden = !contained;
+      backdrop.src = contained ? (trigger.dataset.image ?? '') : '';
+    }
     if (count) count.textContent = `${activeIndex + 1} / ${triggers.length}`;
   };
 
@@ -166,8 +177,6 @@ const relatedServices = project.data.categories
   .project-intro > p:first-child { margin: 0; color: rgba(255,255,255,.72); font-size: clamp(1rem, 2vw, 1.2rem); }
   .project-tags { margin: 0; color: var(--brand-primary); font-size: .72rem; font-weight: 720; letter-spacing: .08em; text-transform: uppercase; }
   .project-cover { position: relative; z-index: 2; overflow: hidden; aspect-ratio: 16 / 9; margin-top: clamp(-2rem, -4vw, -4rem); background: var(--brand-muted-light); box-shadow: var(--shadow); }
-  .project-cover :global(picture), .project-cover :global(img) { width: 100%; height: 100%; }
-  .project-cover :global(img) { object-fit: cover; }
   .project-story { background: var(--paper); }
   .story-grid { display: grid; gap: 2rem; }
   .prose { max-width: 49rem; font-size: clamp(1rem, 1.8vw, 1.15rem); }
@@ -178,9 +187,9 @@ const relatedServices = project.data.categories
   .gallery-heading > p { max-width: 25rem; margin: 0; color: var(--muted); font-size: .8rem; }
   .gallery-grid { display: grid; gap: 1rem; }
   .gallery-item { position: relative; overflow: hidden; aspect-ratio: 4 / 3; border: 0; padding: 0; background: var(--brand-muted-light); cursor: zoom-in; }
-  .gallery-item :global(picture), .gallery-item :global(img) { width: 100%; height: 100%; }
-  .gallery-item :global(img) { object-fit: cover; transition: transform .45s ease; }
-  .gallery-item:hover :global(img) { transform: scale(1.025); }
+  .gallery-item :global(.adaptive-project-image__foreground img) { transition: transform .45s ease; }
+  .gallery-item:hover :global(.adaptive-project-image[data-contained='false'] .adaptive-project-image__foreground img) { transform: scale(1.025); }
+  .gallery-item:hover :global(.adaptive-project-image[data-contained='true'] .adaptive-project-image__backdrop) { transform: scale(1.12); }
   .gallery-item > span { position: absolute; right: 1rem; bottom: 1rem; display: flex; align-items: center; gap: .4rem; padding: .55rem .7rem; background: rgba(23,22,21,.87); color: white; font-size: .64rem; font-weight: 760; letter-spacing: .08em; text-transform: uppercase; backdrop-filter: blur(8px); }
   .project-navigation { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding-block: 2rem; }
   .project-navigation > a { display: grid; align-content: center; min-height: 7rem; border: 1px solid var(--line); padding: 1rem; transition: border-color .2s ease, background .2s ease; }
@@ -192,7 +201,12 @@ const relatedServices = project.data.categories
   .lightbox { width: min(100% - 1rem, 80rem); max-width: none; max-height: calc(100dvh - 1rem); border: 0; padding: 0; background: transparent; color: white; }
   .lightbox::backdrop { background: rgba(10,10,9,.94); backdrop-filter: blur(8px); }
   .lightbox-inner { position: relative; display: grid; max-height: calc(100dvh - 1rem); grid-template-rows: 1fr auto; gap: .75rem; }
-  .lightbox img { width: 100%; max-height: calc(100dvh - 5.5rem); object-fit: contain; }
+  .lightbox-stage { position: relative; display: grid; overflow: hidden; place-items: center; }
+  .lightbox-stage > img { grid-area: 1 / 1; }
+  .lightbox-image { position: relative; z-index: 1; width: 100%; max-height: calc(100dvh - 5.5rem); object-fit: contain; }
+  .lightbox-stage--contained { height: min(75dvh, 54rem); background: var(--brand-dark); }
+  .lightbox-stage--contained .lightbox-image { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; }
+  .lightbox-backdrop { position: absolute; inset: -12%; width: 124%; height: 124%; transform: scale(1.08); filter: blur(34px) saturate(.62) brightness(.58); object-fit: cover; }
   .lightbox-close { position: absolute; top: .75rem; right: .75rem; z-index: 2; display: grid; width: 3rem; height: 3rem; place-items: center; border: 1px solid rgba(255,255,255,.4); background: rgba(10,10,9,.65); color: white; cursor: pointer; }
   .lightbox-controls { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .5rem; }
   .lightbox-controls button { display: flex; align-items: center; gap: .45rem; border: 0; padding: .75rem; background: transparent; color: white; font-size: .7rem; font-weight: 760; text-transform: uppercase; cursor: pointer; }
@@ -201,5 +215,5 @@ const relatedServices = project.data.categories
   @media (min-width: 48rem) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } .project-navigation strong { display: block; } }
   @media (min-width: 64rem) { .project-intro { flex-direction: row; align-items: flex-end; justify-content: space-between; } .story-grid { grid-template-columns: .5fr 1.5fr; } .gallery-heading { grid-template-columns: 1.4fr .6fr; } }
   @media (max-width: 39rem) { .project-cover { aspect-ratio: 4 / 3; } .lightbox-controls button { font-size: 0; } .lightbox-controls button svg { width: 22px; height: 22px; } }
-  @media (prefers-reduced-motion: reduce) { .gallery-item :global(img) { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .gallery-item :global(.adaptive-project-image__foreground img) { transition: none; } }
 </style>

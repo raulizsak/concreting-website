@@ -2,9 +2,9 @@
 import { ArrowRight, Check, Phone } from '@lucide/astro';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import AdaptiveProjectImage from './AdaptiveProjectImage.astro';
 import PageHero from './PageHero.astro';
 import ProjectCard from './ProjectCard.astro';
-import ResponsiveImage from './ResponsiveImage.astro';
 import SectionCta from './SectionCta.astro';
 import { siteConfig, type Service } from '../config/site';
 import { concretingSubservicePages, type ServicePageContent } from '../config/servicePageContent';
@@ -59,7 +59,7 @@ const socialImageWidth = imageWidths?.at(-1) ?? 1200;
   <section class="section service-overview">
     <div class="container overview-grid">
       <div class="overview-media" data-reveal>
-        <ResponsiveImage
+        <AdaptiveProjectImage
           src={image}
           alt={imageAlt}
           width={imageWidth}
@@ -173,8 +173,6 @@ const socialImageWidth = imageWidths?.at(-1) ?? 1200;
   .service-overview { background: var(--paper); }
   .overview-grid { display: grid; align-items: center; gap: clamp(2.5rem, 7vw, 7rem); }
   .overview-media { min-width: 0; overflow: hidden; aspect-ratio: 4 / 3; background: var(--brand-light); box-shadow: var(--shadow); }
-  .overview-media :global(picture), .overview-media :global(img) { width: 100%; height: 100%; }
-  .overview-media :global(img) { object-fit: cover; }
   .overview-copy .display { max-width: 13ch; font-size: clamp(2.65rem, 5.6vw, 5.3rem); }
   .overview-copy > p:not(.eyebrow) { margin: 1rem 0 0; color: var(--muted); }
   .overview-copy > p:nth-of-type(2) { color: var(--brand-dark); font-size: clamp(1rem, 1.8vw, 1.15rem); }

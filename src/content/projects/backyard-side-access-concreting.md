@@ -48,7 +48,7 @@ gallery:
     width: 1200
     height: 1600
 featured: true
-order: 1
+order: 4
 ---
 
 This project involved concrete work across a backyard area and side access around an existing home. The supplied photos show the reinforcement preparation and the completed concrete surface around the property and greenhouse.

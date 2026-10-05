@@ -19,7 +19,7 @@ gallery:
     alt: "Completed plain concrete slab viewed along the grey block wall"
     width: 1200
     height: 1600
-featured: true
+featured: false
 order: 3
 ---
 

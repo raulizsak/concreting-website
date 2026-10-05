@@ -17,6 +17,12 @@ This register records the provenance of service photography used on the website.
 
 `IMG_7690.jpeg`, `IMG_7692.jpeg` and `IMG_7693.jpeg` are explicitly rejected. They must not be copied into the repository, processed into derivatives or referenced by the website.
 
+## Project photography update — 5 October 2026
+
+The project galleries for multi-unit residential concreting, residential driveways and crossovers, coloured concrete driveways and paths, and exposed aggregate driveways, steps and entries use genuine Geli Construction Services photography supplied by the business in the shared `Job 1` through `Job 10` folders. Only optimized AVIF and WebP derivatives are published; the supplied JPEG files remain outside the repository.
+
+Job 7 and the loose root-level images were not used. Other unused job photographs were omitted because they duplicated stronger views, contained a photographer shadow that could not be cropped naturally, or showed more site clutter than the selected alternatives.
+
 ## Processing
 
 Published derivatives are auto-oriented, cropped where specified, resized without enlargement, and encoded through Sharp. The processing pipeline does not copy EXIF, IPTC or XMP metadata into generated output files.

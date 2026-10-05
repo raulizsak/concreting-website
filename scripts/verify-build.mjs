@@ -83,6 +83,9 @@ const projectSlugs = [
   'plain-concrete-slab-installation',
   'residential-concrete-driveway',
   'backyard-side-access-concreting',
+  'multi-unit-residential-concreting',
+  'coloured-concrete-driveways-paths',
+  'exposed-aggregate-concrete-driveways-steps',
 ];
 const missingProjectRoutes = projectSlugs.filter((slug) => !existsSync(join(dist, 'projects', slug, 'index.html')));
 const expectedIndexableRoutes = [
@@ -138,7 +141,7 @@ const missingNoindex = intentionalNoindexRoutes.filter((route) => {
   const file = outputForRoute(route);
   return !existsSync(file) || !/name="robots" content="noindex,follow"/i.test(readFileSync(file, 'utf8'));
 });
-const expectedProjectImages = 114;
+const expectedProjectImages = 216;
 const projectImageDirectory = join(dist, 'images', 'projects');
 const projectImageCount = existsSync(projectImageDirectory) ? walk(projectImageDirectory).filter((file) => /\.(?:avif|webp)$/i.test(file)).length : 0;
 const expectedServiceImages = 28;

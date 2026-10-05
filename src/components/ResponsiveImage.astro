@@ -26,7 +26,9 @@ const {
 } = Astro.props;
 
 const widths = suppliedWidths ?? (variant === 'hero' ? [480, 768, 1200, 1536] : [480, 800, 1200]);
-const srcset = (format: string) => widths.map((imageWidth) => `${src}-${imageWidth}.${format} ${imageWidth}w`).join(', ');
+const srcset = (format: string) => widths
+  .map((imageWidth) => `${src}-${imageWidth}.${format} ${Math.min(imageWidth, width)}w`)
+  .join(', ');
 ---
 
 <picture class={className}>
