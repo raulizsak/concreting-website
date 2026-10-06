@@ -38,7 +38,7 @@ gallery:
     alt: "Light exposed aggregate concrete driveway leading to a residential garage"
     width: 3200
     height: 2400
-featured: false
+featured: true
 order: 5
 ---
 
