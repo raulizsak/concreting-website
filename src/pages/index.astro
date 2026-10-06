@@ -216,7 +216,7 @@ const reasons = [
   .feedback-card .display { font-size: clamp(3rem, 7vw, 6.5rem); }
   .feedback-card > p:last-child { max-width: 50rem; margin: 1.25rem auto 0; }
   @keyframes hero-copy-in { from { opacity: 0; transform: translateY(12px); } }
-  @media (min-width: 48rem) { .hero-scroll { display: flex; } .services-grid { grid-template-columns: repeat(2, 1fr); } .project-grid { grid-template-columns: repeat(2, 1fr); } .project-grid :global(.project-card:last-child) { grid-column: 1 / -1; width: calc(50% - .75rem); } }
+  @media (min-width: 48rem) { .hero-scroll { display: flex; } .services-grid { grid-template-columns: repeat(2, 1fr); } .project-grid { grid-template-columns: repeat(2, 1fr); } .project-grid :global(.project-card:last-child:nth-child(odd)) { grid-column: 1 / -1; width: calc(50% - .75rem); } }
   @media (min-width: 64rem) { .intro-grid { grid-template-columns: .45fr 1.55fr; } .intro-copy { grid-template-columns: 1fr 1fr; } .section-heading { flex-direction: row; align-items: flex-end; justify-content: space-between; } .projects-actions { align-items: flex-end; } .services-grid { grid-template-columns: repeat(3, 1fr); } .reasons-layout { grid-template-columns: .9fr 1.1fr; } .reasons-heading { position: sticky; top: 2rem; } .feedback-card > p:last-child { white-space: nowrap; } }
   @media (max-width: 39rem) { .hero-actions .button { width: 100%; } :global(.hero-picture img) { object-position: 62% center; } }
   @media (prefers-reduced-motion: reduce) { .hero-copy { animation: none; } .service-visual :global(img) { transition: none; } }
