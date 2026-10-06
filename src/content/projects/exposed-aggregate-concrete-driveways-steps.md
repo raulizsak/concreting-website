@@ -18,6 +18,10 @@ gallery:
     alt: "Dark exposed aggregate concrete entry area extending beside a residential home"
     width: 1200
     height: 1350
+  - image: "/images/projects/exposed-aggregate-concrete-driveways-steps/dark-exposed-aggregate-front-entry"
+    alt: "Dark exposed aggregate concrete entry area at a residential home"
+    width: 4032
+    height: 3024
   - image: "/images/projects/exposed-aggregate-concrete-driveways-steps/exposed-aggregate-concrete-steps-wide"
     alt: "Exposed aggregate concrete landing and steps beside a residential outdoor area"
     width: 1170
@@ -30,6 +34,10 @@ gallery:
     alt: "Light exposed aggregate concrete driveway in front of a residential garage"
     width: 1600
     height: 1100
+  - image: "/images/projects/exposed-aggregate-concrete-driveways-steps/light-exposed-aggregate-driveway-detail"
+    alt: "Light exposed aggregate concrete driveway leading to a residential garage"
+    width: 3200
+    height: 2400
 featured: false
 order: 5
 ---

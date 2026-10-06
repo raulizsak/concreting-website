@@ -25,6 +25,14 @@ gallery:
     alt: "Dark-coloured concrete driveway and entry area outside a residential garage"
     width: 1600
     height: 1080
+  - image: "/images/projects/coloured-concrete-driveways-paths/charcoal-concrete-side-driveway"
+    alt: "Charcoal-coloured concrete driveway and side access leading to a residential garage"
+    width: 3024
+    height: 4032
+  - image: "/images/projects/coloured-concrete-driveways-paths/charcoal-concrete-driveway-drainage"
+    alt: "Charcoal-coloured concrete driveway finished around a drainage grate beside a residential garage"
+    width: 3720
+    height: 2790
 featured: true
 order: 6
 ---

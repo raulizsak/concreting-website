@@ -23,6 +23,14 @@ The project galleries for multi-unit residential concreting, residential drivewa
 
 Job 7 and the loose root-level images were not used. Other unused job photographs were omitted because they duplicated stronger views, contained a photographer shadow that could not be cropped naturally, or showed more site clutter than the selected alternatives.
 
+## Additional project photography — 6 October 2026
+
+Four additional genuine Geli Construction Services photographs supplied in the local `job 11/Job 11` folder were added to the existing exposed aggregate and coloured concrete galleries. The published files are optimized AVIF and WebP derivatives; the original JPEG files remain outside the repository.
+
+`6DE70C4D-8263-4FAF-A9B9-EA41990C1B6C.JPG` and `4F8FD912-ECD6-4303-93FD-01F25D416885.JPG` were added to the exposed aggregate gallery. Readable site and lot markings in the first image were locally blurred for privacy, and the second image was naturally cropped to remove pressure-washing equipment. `IMG_0030.JPG` and `IMG_0032.JPG` were added as complementary coloured concrete views; the portrait composition of `IMG_0030.JPG` was retained, and `IMG_0032.JPG` received a modest straightening crop.
+
+`F960FA4A-4369-4E63-A369-85A32A15F950.JPG` was omitted because the photographer shadow dominates the driveway surface. `E6338AF8-72C5-481F-A5D5-367225FA4D04.JPG` was omitted because equipment and hoses obscure the foreground and a stronger clean view of the same work was supplied.
+
 ## Processing
 
 Published derivatives are auto-oriented, cropped where specified, resized without enlargement, and encoded through Sharp. The processing pipeline does not copy EXIF, IPTC or XMP metadata into generated output files.

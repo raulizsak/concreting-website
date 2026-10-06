@@ -141,7 +141,7 @@ const missingNoindex = intentionalNoindexRoutes.filter((route) => {
   const file = outputForRoute(route);
   return !existsSync(file) || !/name="robots" content="noindex,follow"/i.test(readFileSync(file, 'utf8'));
 });
-const expectedProjectImages = 216;
+const expectedProjectImages = 240;
 const projectImageDirectory = join(dist, 'images', 'projects');
 const projectImageCount = existsSync(projectImageDirectory) ? walk(projectImageDirectory).filter((file) => /\.(?:avif|webp)$/i.test(file)).length : 0;
 const expectedServiceImages = 28;
