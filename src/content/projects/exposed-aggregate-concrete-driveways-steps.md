@@ -8,20 +8,20 @@ tags:
   - "Concrete Driveways"
   - "Concrete Steps"
   - "Entry Areas"
-coverImage: "/images/projects/exposed-aggregate-concrete-driveways-steps/exposed-aggregate-driveway"
-coverAlt: "Dark exposed aggregate concrete driveway and entry area at a residential property"
-coverWidth: 1600
-coverHeight: 900
+coverImage: "/images/projects/exposed-aggregate-concrete-driveways-steps/dark-exposed-aggregate-front-entry"
+coverAlt: "Dark exposed aggregate concrete entry area at a residential home"
+coverWidth: 4032
+coverHeight: 3024
 summary: "Residential exposed aggregate concrete work across driveways, entry areas, landings and steps, shown in both dark and lighter finishes."
 gallery:
   - image: "/images/projects/exposed-aggregate-concrete-driveways-steps/exposed-aggregate-entry"
     alt: "Dark exposed aggregate concrete entry area extending beside a residential home"
     width: 1200
     height: 1350
-  - image: "/images/projects/exposed-aggregate-concrete-driveways-steps/dark-exposed-aggregate-front-entry"
-    alt: "Dark exposed aggregate concrete entry area at a residential home"
-    width: 4032
-    height: 3024
+  - image: "/images/projects/exposed-aggregate-concrete-driveways-steps/exposed-aggregate-driveway"
+    alt: "Dark exposed aggregate concrete driveway and entry area at a residential property"
+    width: 1600
+    height: 900
   - image: "/images/projects/exposed-aggregate-concrete-driveways-steps/exposed-aggregate-concrete-steps-wide"
     alt: "Exposed aggregate concrete landing and steps beside a residential outdoor area"
     width: 1170
