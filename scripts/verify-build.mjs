@@ -144,13 +144,13 @@ const missingNoindex = intentionalNoindexRoutes.filter((route) => {
 const expectedProjectImages = 240;
 const projectImageDirectory = join(dist, 'images', 'projects');
 const projectImageCount = existsSync(projectImageDirectory) ? walk(projectImageDirectory).filter((file) => /\.(?:avif|webp)$/i.test(file)).length : 0;
-const expectedServiceImages = 28;
+const expectedServiceImages = 30;
 const serviceImageDirectory = join(dist, 'images', 'services');
 const serviceImageCount = existsSync(serviceImageDirectory) ? walk(serviceImageDirectory).filter((file) => /\.(?:avif|webp)$/i.test(file)).length : 0;
 const serviceImagesUseApprovedMappings = [
   '/images/projects/plain-concrete-slab-installation/cover-',
   '/images/services/excavation-',
-  '/images/services/stonework-outdoor-tiling-',
+  '/images/services/natural-stone-wall-steps-paving-',
   '/images/services/outdoor-finishing-',
   '/images/services/irrigation-drainage-',
   '/images/services/retaining-walls-',
